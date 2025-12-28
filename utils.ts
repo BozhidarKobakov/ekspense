@@ -19,3 +19,10 @@ export const parseDateFromStr = (str: string): Date => {
   // Simple parser assuming input is YYYY-MM-DD from HTML input
   return new Date(str);
 }
+
+export const clearLocalData = () => {
+  localStorage.removeItem('ekspence_transactions');
+  localStorage.removeItem('ekspence_accounts');
+  localStorage.removeItem('ekspence_expense_categories');
+  localStorage.removeItem('ekspence_income_categories');
+};

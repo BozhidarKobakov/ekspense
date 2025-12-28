@@ -13,6 +13,7 @@ import { supabase } from './services/supabase';
 import AuthView from './components/AuthView';
 import { Session } from '@supabase/supabase-js';
 import { getTranslation } from './translations';
+import { clearLocalData } from './utils';
 
 // Icons
 const DashboardIcon = ({ className }: { className?: string }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>;
@@ -34,6 +35,11 @@ function App() {
       console.log("Session fetched:", !!session);
       setSession(session);
       setIsInitializingAuth(false);
+
+      // If no session, ensure local data from previous user is cleared
+      if (!session) {
+        clearLocalData();
+      }
     }).catch(err => {
       console.error("Auth Session Error:", err);
       setIsInitializingAuth(false);
@@ -43,6 +49,11 @@ function App() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Auth state changed:", !!session);
       setSession(session);
+      if (!session) {
+        clearLocalData();
+        // Force a page reload to clear memory state and avoid leaks
+        window.location.reload();
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -533,6 +544,8 @@ function App() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    clearLocalData();
+    window.location.reload();
   };
 
   const handleUpdateTransactionInline = (id: string, updates: Partial<Transaction>) => {
