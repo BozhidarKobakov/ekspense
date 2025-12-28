@@ -139,6 +139,74 @@ function App() {
     return localStorage.getItem('ekspence_target_month') || 'Dec-2025';
   });
 
+  const [isDataLoading, setIsDataLoading] = useState(false);
+
+  // Sync Data with Supabase
+  useEffect(() => {
+    if (!session) return;
+
+    const fetchData = async () => {
+      setIsDataLoading(true);
+      try {
+        // Fetch Accounts
+        const { data: accountsData } = await supabase
+          .from('accounts')
+          .select('*')
+          .order('name');
+
+        // Fetch Transactions
+        const { data: transData } = await supabase
+          .from('transactions')
+          .select('*')
+          .order('date', { ascending: false });
+
+        // Fetch Categories
+        const { data: catsData } = await supabase
+          .from('categories')
+          .select('*');
+
+        if (accountsData && accountsData.length > 0) {
+          setAccounts(accountsData.map(a => ({ name: a.name, type: a.type, currency: a.currency })));
+        } else if (accounts.length === INITIAL_ACCOUNTS.length) {
+          // MIGRATION: If cloud is empty but local has data, migrate
+          for (const acc of accounts) {
+            await supabase.from('accounts').insert({
+              user_id: session.user.id,
+              name: acc.name,
+              type: acc.type,
+              currency: acc.currency
+            });
+          }
+        }
+
+        if (transData && transData.length > 0) {
+          setTransactions(transData.map(t => ({
+            id: t.id,
+            date: new Date(t.date),
+            description: t.description || '',
+            fromAccount: t.from_account,
+            toAccount: t.to_account,
+            amount: Number(t.amount),
+            category: t.category
+          })));
+        }
+
+        if (catsData && catsData.length > 0) {
+          const cloudExpense = catsData.filter(c => c.type === 'expense').map(c => c.name);
+          const cloudIncome = catsData.filter(c => c.type === 'income').map(c => c.name);
+          if (cloudExpense.length > 0) setExpenseCategories(cloudExpense);
+          if (cloudIncome.length > 0) setIncomeCategories(cloudIncome);
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+      } finally {
+        setIsDataLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [session]);
+
   useEffect(() => {
     localStorage.setItem('ekspence_target_month', targetMonth);
   }, [targetMonth]);
@@ -291,19 +359,32 @@ function App() {
 
     if (editingTransaction) {
       // UPDATE existing transaction
-      setTransactions(prev => prev.map(t => t.id === editingTransaction.id ? {
-        ...t,
+      const updatedTrans = {
+        ...editingTransaction,
         date: dateObj,
         description: finalDesc,
         fromAccount: finalFrom,
         toAccount: finalTo,
         amount: parseFloat(newAmount),
         category: newCategory
-      } : t));
+      };
+      setTransactions(prev => prev.map(t => t.id === editingTransaction.id ? updatedTrans : t));
+
+      if (session) {
+        supabase.from('transactions').update({
+          date: newDate,
+          description: finalDesc,
+          from_account: finalFrom,
+          to_account: finalTo,
+          amount: parseFloat(newAmount),
+          category: newCategory
+        }).eq('id', editingTransaction.id).then();
+      }
     } else {
       // CREATE new transaction
+      const newId = crypto.randomUUID();
       const newTrans: Transaction = {
-        id: Math.random().toString(36).substr(2, 9),
+        id: newId,
         date: dateObj,
         description: finalDesc,
         fromAccount: finalFrom,
@@ -312,6 +393,19 @@ function App() {
         category: newCategory
       };
       setTransactions([newTrans, ...transactions]);
+
+      if (session) {
+        supabase.from('transactions').insert({
+          id: newId,
+          user_id: session.user.id,
+          date: newDate,
+          description: finalDesc,
+          from_account: finalFrom,
+          to_account: finalTo,
+          amount: parseFloat(newAmount),
+          category: newCategory
+        }).then();
+      }
     }
 
     triggerFeedback('success', editingTransaction ? 'Entry updated' : 'Entry confirmed');
@@ -355,9 +449,14 @@ function App() {
     setIsModalOpen(true);
   };
 
-  const handleDeleteTransaction = (id: string) => {
+  const handleDeleteTransaction = async (id: string) => {
     // Directly delete without confirmation dialog to ensure functionality works
     setTransactions(prev => prev.filter(t => String(t.id) !== String(id)));
+
+    if (session) {
+      await supabase.from('transactions').delete().eq('id', id);
+    }
+
     triggerFeedback('success', 'Entry deleted');
   };
 
@@ -434,8 +533,18 @@ function App() {
     setTransactions(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
   };
 
-  const handleAddAccount = (account: AccountSummary) => {
+  const handleAddAccount = async (account: AccountSummary) => {
     setAccounts(prev => [...prev, account]);
+
+    if (session) {
+      await supabase.from('accounts').insert({
+        user_id: session.user.id,
+        name: account.name,
+        type: account.type,
+        currency: account.currency
+      });
+    }
+
     triggerFeedback('success', 'Account added');
   };
 
@@ -520,8 +629,9 @@ function App() {
       // Handle Initial Balance
       const initialAmt = parseFloat(newAccInitialBalance);
       if (!isNaN(initialAmt) && initialAmt > 0) {
+        const initialId = crypto.randomUUID();
         const initialTx: Transaction = {
-          id: Date.now().toString(),
+          id: initialId,
           date: new Date(),
           description: 'Opening Balance',
           amount: initialAmt,
@@ -530,22 +640,49 @@ function App() {
           toAccount: accountData.name
         };
         setTransactions(prev => [initialTx, ...prev]);
+
+        if (session) {
+          supabase.from('transactions').insert({
+            id: initialId,
+            user_id: session.user.id,
+            date: new Date().toISOString().split('T')[0],
+            description: 'Opening Balance',
+            amount: initialAmt,
+            category: 'Income',
+            from_account: 'Initial Balance',
+            to_account: accountData.name
+          }).then();
+        }
+
         triggerFeedback('success', `Account created with ${initialAmt.toLocaleString()} starting balance`);
+        closeAccountModal();
       } else {
         closeAccountModal();
       }
     }
   };
 
-  const handleAddCategory = (type: 'expense' | 'income', name: string) => {
+  const handleAddCategory = async (type: 'expense' | 'income', name: string) => {
     if (type === 'expense') setExpenseCategories(prev => [...prev, name]);
     else setIncomeCategories(prev => [...prev, name]);
+
+    if (session) {
+      await supabase.from('categories').insert({
+        user_id: session.user.id,
+        name: name,
+        type: type
+      });
+    }
     triggerFeedback('success', 'Category added');
   };
 
-  const handleDeleteCategory = (type: 'expense' | 'income', name: string) => {
+  const handleDeleteCategory = async (type: 'expense' | 'income', name: string) => {
     if (type === 'expense') setExpenseCategories(prev => prev.filter(c => c !== name));
     else setIncomeCategories(prev => prev.filter(c => c !== name));
+
+    if (session) {
+      await supabase.from('categories').delete().eq('name', name).eq('type', type);
+    }
     triggerFeedback('success', 'Category removed');
   };
 
