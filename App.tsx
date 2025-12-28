@@ -26,6 +26,7 @@ const SettingsIcon = ({ className }: { className?: string }) => <svg className={
 function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [isInitializingAuth, setIsInitializingAuth] = useState(true);
+  const [showInitializationError, setShowInitializationError] = useState(false);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'transactions' | 'accounts' | 'analytics' | 'categories' | 'settings'>('dashboard');
 
   useEffect(() => {
@@ -59,7 +60,15 @@ function App() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Timeout to show error if Supabase hangs
+    const timer = setTimeout(() => {
+      if (isInitializingAuth) setShowInitializationError(true);
+    }, 6000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   // Language State
@@ -778,12 +787,26 @@ function App() {
 
   if (isInitializingAuth) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center p-6 transition-colors duration-500">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center p-6 transition-colors duration-500">
         <div className="text-center">
           <h1 className="text-4xl font-black tracking-tighter text-primary mb-4 animate-pulse" style={{ fontFamily: "'Outfit', sans-serif" }}>
             EKSPENSE
           </h1>
-          <div className="w-12 h-1 border-2 border-primary/20 border-t-primary rounded-full animate-spin mx-auto" />
+          <div className="w-12 h-1 border-2 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-6" />
+
+          {showInitializationError && (
+            <div className="max-w-xs mx-auto space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold p-4 rounded-2xl">
+                Still loading... This usually means your Supabase environment variables are missing in Vercel.
+              </div>
+              <button
+                onClick={() => setIsInitializingAuth(false)}
+                className="text-primary hover:text-primary-dark text-xs font-black uppercase tracking-widest border-b-2 border-primary/20 hover:border-primary transition-all"
+              >
+                Skip and try to enter →
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
