@@ -28,14 +28,20 @@ function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'transactions' | 'accounts' | 'analytics' | 'categories' | 'settings'>('dashboard');
 
   useEffect(() => {
+    console.log("Initializing Auth...");
     // Check active session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Session fetched:", !!session);
       setSession(session);
+      setIsInitializingAuth(false);
+    }).catch(err => {
+      console.error("Auth Session Error:", err);
       setIsInitializingAuth(false);
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", !!session);
       setSession(session);
     });
 
@@ -382,7 +388,7 @@ function App() {
       }
     } else {
       // CREATE new transaction
-      const newId = crypto.randomUUID();
+      const newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9);
       const newTrans: Transaction = {
         id: newId,
         date: dateObj,
@@ -629,7 +635,7 @@ function App() {
       // Handle Initial Balance
       const initialAmt = parseFloat(newAccInitialBalance);
       if (!isNaN(initialAmt) && initialAmt > 0) {
-        const initialId = crypto.randomUUID();
+        const initialId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9);
         const initialTx: Transaction = {
           id: initialId,
           date: new Date(),
@@ -897,7 +903,6 @@ function App() {
         <MobileNavButton active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} icon={<SettingsIcon />} label="More" />
       </nav>
 
-      {/* Main Content */}
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto h-screen scroll-smooth">
         <div className="max-w-7xl mx-auto p-6 pt-24 pb-32 md:p-12 md:pt-12 md:pb-12">
