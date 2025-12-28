@@ -51,8 +51,11 @@ function App() {
       setSession(session);
       if (event === 'SIGNED_OUT') {
         clearLocalData();
-        // Force a page reload to clear memory state and avoid leaks only on actual sign out
-        window.location.reload();
+        // Reset local state to defaults without reloading the page
+        setTransactions(INITIAL_TRANSACTIONS);
+        setAccounts(INITIAL_ACCOUNTS);
+        setExpenseCategories(EXPENSE_CATEGORIES);
+        setIncomeCategories(INCOME_CATEGORIES);
       }
     });
 
@@ -544,8 +547,6 @@ function App() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    clearLocalData();
-    window.location.reload();
   };
 
   const handleUpdateTransactionInline = (id: string, updates: Partial<Transaction>) => {
