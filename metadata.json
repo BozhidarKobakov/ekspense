@@ -1,0 +1,5 @@
+{
+  "name": "EKSPENSE",
+  "description": "A comprehensive expense tracking application mimicking spreadsheet functionality with advanced dashboard analytics for DSK accounts and category tracking.",
+  "requestFramePermissions": []
+}
