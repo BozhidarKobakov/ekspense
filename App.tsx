@@ -37,9 +37,21 @@ function App() {
       setSession(session);
       setIsInitializingAuth(false);
 
-      // If no session, ensure local data from previous user is cleared
+      // If no session, load local data or initial demo data
       if (!session) {
-        clearLocalData();
+        try {
+          const savedAcc = localStorage.getItem('ekspence_accounts');
+          setAccounts(savedAcc ? JSON.parse(savedAcc) : INITIAL_ACCOUNTS);
+          const savedTx = localStorage.getItem('ekspence_transactions');
+          setTransactions(savedTx ? JSON.parse(savedTx, (k, v) => k === 'date' ? new Date(v) : v) : INITIAL_TRANSACTIONS);
+        } catch (e) {
+          setAccounts(INITIAL_ACCOUNTS);
+          setTransactions(INITIAL_TRANSACTIONS);
+        }
+      } else {
+        // Clear demo data immediately to avoid flash of wrong data before fetch
+        setAccounts([]);
+        setTransactions([]);
       }
     }).catch(err => {
       console.error("Auth Session Error:", err);
@@ -101,34 +113,10 @@ function App() {
   const toggleDarkMode = () => setDarkMode(!darkMode);
 
   // Initialize transactions from localStorage if available, otherwise use initial data
-  const [transactions, setTransactions] = useState<Transaction[]>(() => {
-    try {
-      const saved = localStorage.getItem('ekspence_transactions');
-      if (saved) {
-        // Parse JSON and revive Date objects
-        return JSON.parse(saved, (key, value) => {
-          if (key === 'date') return new Date(value);
-          return value;
-        });
-      }
-    } catch (error) {
-      console.error("Failed to load transactions from localStorage:", error);
-    }
-    return INITIAL_TRANSACTIONS;
-  });
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   // Initialize accounts from localStorage
-  const [accounts, setAccounts] = useState<AccountSummary[]>(() => {
-    try {
-      const saved = localStorage.getItem('ekspence_accounts');
-      if (saved) {
-        return JSON.parse(saved);
-      }
-    } catch (error) {
-      console.error("Failed to load accounts from localStorage:", error);
-    }
-    return INITIAL_ACCOUNTS;
-  });
+  const [accounts, setAccounts] = useState<AccountSummary[]>([]);
 
   // Proactive fix for Revolut name and BGN currency as requested
   useEffect(() => {
@@ -196,16 +184,8 @@ function App() {
 
         if (accountsData && accountsData.length > 0) {
           setAccounts(accountsData.map(a => ({ name: a.name, type: a.type, currency: a.currency })));
-        } else if (accounts.length === INITIAL_ACCOUNTS.length) {
-          // MIGRATION: If cloud is empty but local has data, migrate
-          for (const acc of accounts) {
-            await supabase.from('accounts').insert({
-              user_id: session.user.id,
-              name: acc.name,
-              type: acc.type,
-              currency: acc.currency
-            });
-          }
+        } else {
+          setAccounts([]);
         }
 
         if (transData && transData.length > 0) {
@@ -218,6 +198,8 @@ function App() {
             amount: Number(t.amount),
             category: t.category
           })));
+        } else {
+          setTransactions([]);
         }
 
         if (catsData && catsData.length > 0) {
