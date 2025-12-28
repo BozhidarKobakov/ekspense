@@ -18,23 +18,26 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
         setError(null);
 
         try {
+            const cleanEmail = email.trim().toLowerCase();
+            const cleanPassword = password.trim();
+
             if (import.meta.env.VITE_SUPABASE_URL?.includes('placeholder') || !import.meta.env.VITE_SUPABASE_URL) {
                 throw new Error("Supabase URL is missing. Check your Vercel Environment Variables.");
             }
 
             if (isLogin) {
                 const { error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password,
+                    email: cleanEmail,
+                    password: cleanPassword,
                 });
                 if (error) throw error;
             } else {
                 const { error } = await supabase.auth.signUp({
-                    email,
-                    password,
+                    email: cleanEmail,
+                    password: cleanPassword,
                 });
                 if (error) throw error;
-                alert('Check your email for the confirmation link!');
+                alert('Account requested! If "Confirm Email" is ON in Supabase, check your inbox. If OFF, you can login now.');
             }
             onAuthSuccess();
         } catch (err: any) {
