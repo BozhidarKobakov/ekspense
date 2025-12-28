@@ -46,12 +46,12 @@ function App() {
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state changed:", !!session);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event, !!session);
       setSession(session);
-      if (!session) {
+      if (event === 'SIGNED_OUT') {
         clearLocalData();
-        // Force a page reload to clear memory state and avoid leaks
+        // Force a page reload to clear memory state and avoid leaks only on actual sign out
         window.location.reload();
       }
     });
