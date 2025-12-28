@@ -18,6 +18,10 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
         setError(null);
 
         try {
+            if (import.meta.env.VITE_SUPABASE_URL?.includes('placeholder') || !import.meta.env.VITE_SUPABASE_URL) {
+                throw new Error("Supabase URL is missing. Check your Vercel Environment Variables.");
+            }
+
             if (isLogin) {
                 const { error } = await supabase.auth.signInWithPassword({
                     email,
@@ -34,7 +38,7 @@ const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
             }
             onAuthSuccess();
         } catch (err: any) {
-            setError(err.message);
+            setError(err.message === 'Failed to fetch' ? 'Connection Error: Check if VITE_SUPABASE_URL is correct in Vercel.' : err.message);
         } finally {
             setLoading(false);
         }
