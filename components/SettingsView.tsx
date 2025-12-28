@@ -1,4 +1,5 @@
 import React from 'react';
+import { getTranslation } from '../translations';
 
 interface SettingsViewProps {
     darkMode: boolean;
@@ -24,7 +25,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto pb-24">
             {/* Header */}
             <div>
-                <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Settings</h3>
+                <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">{getTranslation(language, 'settings')}</h3>
                 <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mt-2">Personalize your experience</p>
             </div>
 
@@ -36,13 +37,13 @@ const SettingsView: React.FC<SettingsViewProps> = ({
                             <div className="p-3 bg-primary/10 rounded-2xl text-primary-dark">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                             </div>
-                            <h4 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Appearance</h4>
+                            <h4 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">{getTranslation(language, 'appearance')}</h4>
                         </div>
 
                         <div className="space-y-6">
                             <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 rounded-3xl border border-transparent hover:border-primary/20 transition-all">
                                 <div>
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Dark Mode</p>
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">{getTranslation(language, 'dark_mode')}</p>
                                     <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest mt-1">Easier on the eyes</p>
                                 </div>
                                 <button
@@ -65,7 +66,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
                             <div className="p-3 bg-primary/10 rounded-2xl text-primary-dark">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg>
                             </div>
-                            <h4 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Localization</h4>
+                            <h4 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">{getTranslation(language, 'localization')}</h4>
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">

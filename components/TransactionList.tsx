@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Transaction } from '../types';
 import { formatDateColumn } from '../utils';
+import { getTranslation } from '../translations';
 
 
 interface TransactionListProps {
@@ -8,12 +9,13 @@ interface TransactionListProps {
   onUpdateTransaction: (id: string, updates: Partial<Transaction>) => void;
   onEdit: (transaction: Transaction) => void;
   onDelete: (id: string) => void;
+  language: string;
 }
 
 type SortKey = keyof Transaction | 'date';
 type SortDirection = 'asc' | 'desc';
 
-const TransactionList: React.FC<TransactionListProps> = ({ transactions, onUpdateTransaction, onEdit, onDelete }) => {
+const TransactionList: React.FC<TransactionListProps> = ({ transactions, onUpdateTransaction, onEdit, onDelete, language }) => {
   const [filterText, setFilterText] = useState('');
 
   // Specific Filters
@@ -189,14 +191,14 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onUpdat
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <HeaderCell label="Date" sortKey="date" />
-                <HeaderCell label="Description" sortKey="description" />
-                <HeaderCell label="From" sortKey="fromAccount" />
-                <HeaderCell label="To" sortKey="toAccount" />
-                <HeaderCell label="Amount" sortKey="amount" align="right" />
-                <HeaderCell label="Category" sortKey="category" />
+                <HeaderCell label={getTranslation(language, 'date')} sortKey="date" />
+                <HeaderCell label={getTranslation(language, 'description')} sortKey="description" />
+                <HeaderCell label={getTranslation(language, 'from')} sortKey="fromAccount" />
+                <HeaderCell label={getTranslation(language, 'to')} sortKey="toAccount" />
+                <HeaderCell label={getTranslation(language, 'amount')} sortKey="amount" align="right" />
+                <HeaderCell label={getTranslation(language, 'category')} sortKey="category" />
                 <th scope="col" className="px-6 py-3 text-right text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                  Actions
+                  {getTranslation(language, 'actions')}
                 </th>
               </tr>
             </thead>

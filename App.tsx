@@ -12,6 +12,7 @@ import { getCategoryIcon } from './components/CategoryIcons';
 import { supabase } from './services/supabase';
 import AuthView from './components/AuthView';
 import { Session } from '@supabase/supabase-js';
+import { getTranslation } from './translations';
 
 // Icons
 const DashboardIcon = ({ className }: { className?: string }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>;
@@ -696,15 +697,16 @@ function App() {
         </div>
 
         <nav className="py-6 space-y-4 flex-1 overflow-x-hidden">
-          <NavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon className="w-6 h-6" />} label="Overview" />
-          <NavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<TransactionsIcon className="w-6 h-6" />} label="Transactions" />
-          <NavButton active={activeTab === 'accounts'} onClick={() => setActiveTab('accounts')} icon={<AccountsIcon className="w-6 h-6" />} label="Accounts" />
-          <NavButton active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={<AnalyticsIcon className="w-6 h-6" />} label="Analytics" />
-          <NavButton active={activeTab === 'categories'} onClick={() => setActiveTab('categories')} icon={<CategoriesIcon className="w-6 h-6" />} label="Categories" />
+          <NavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon className="w-6 h-6" />} label={getTranslation(language, 'overview')} />
+          <NavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<TransactionsIcon className="w-6 h-6" />} label={getTranslation(language, 'transactions')} />
+          <NavButton active={activeTab === 'accounts'} onClick={() => setActiveTab('accounts')} icon={<AccountsIcon className="w-6 h-6" />} label={getTranslation(language, 'accounts')} />
+          <NavButton active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={<AnalyticsIcon className="w-6 h-6" />} label={getTranslation(language, 'analytics')} />
+          <NavButton active={activeTab === 'categories'} onClick={() => setActiveTab('categories')} icon={<CategoriesIcon className="w-6 h-6" />} label={getTranslation(language, 'categories')} />
         </nav>
 
+        {/* Bottom Utility Area */}
         <div className="pb-4 space-y-2">
-          <NavButton active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} icon={<SettingsIcon className="w-6 h-6" />} label="Settings" />
+          <NavButton active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} icon={<SettingsIcon className="w-6 h-6" />} label={getTranslation(language, 'settings')} />
           <button
             onClick={handleLogout}
             className="w-full flex items-center h-16 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-all duration-300 font-black overflow-hidden group/logout"
@@ -765,10 +767,10 @@ function App() {
           <header className="hidden md:flex justify-between items-center mb-12">
             <div>
               <h2 className="text-4xl font-black text-gray-900 dark:text-white capitalize tracking-tighter" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                {activeTab === 'dashboard' ? 'Dashboard' : activeTab}
+                {activeTab === 'dashboard' ? getTranslation(language, 'dashboard') : getTranslation(language, activeTab)}
               </h2>
               <p className="text-gray-500 dark:text-gray-400 font-medium h-5">
-                {activeTab === 'dashboard' ? `Financial status for ${targetMonth}` : `Manage your ${activeTab}`}
+                {activeTab === 'dashboard' ? `${getTranslation(language, 'financial_status')} ${targetMonth}` : `${getTranslation(language, 'manage_your')} ${getTranslation(language, activeTab)}`}
               </p>
             </div>
 
@@ -779,7 +781,7 @@ function App() {
                   className="bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white px-6 py-3 rounded-2xl border border-gray-200 dark:border-white/10 flex items-center space-x-2 transition-all hover:bg-gray-200 dark:hover:bg-white/10 font-bold"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" /></svg>
-                  <span>Add Account</span>
+                  <span>{getTranslation(language, 'add_account')}</span>
                 </button>
               )}
               <button
@@ -787,7 +789,7 @@ function App() {
                 className="bg-primary hover:bg-primary-dark text-gray-950 px-6 py-3 rounded-2xl shadow-xl shadow-primary/20 flex items-center space-x-2 transition-all transform hover:scale-105 font-bold"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" /></svg>
-                <span>New Entry</span>
+                <span>{getTranslation(language, 'new_entry')}</span>
               </button>
             </div>
           </header>
@@ -799,6 +801,7 @@ function App() {
               availableMonths={availableMonths}
               onMonthChange={setTargetMonth}
               accounts={accounts}
+              language={language}
             />
           )}
           {activeTab === 'transactions' && (
@@ -807,6 +810,7 @@ function App() {
               onUpdateTransaction={handleUpdateTransactionInline}
               onEdit={handleEditTransaction}
               onDelete={handleDeleteTransaction}
+              language={language}
             />
           )}
           {activeTab === 'accounts' && (
@@ -817,6 +821,7 @@ function App() {
               onUpdateAccount={handleUpdateAccount}
               onDeleteAccount={handleDeleteAccount}
               onEditAccount={startEditAccount}
+              language={language}
             />
           )}
           {activeTab === 'analytics' && (
@@ -827,6 +832,7 @@ function App() {
               onMonthChange={setTargetMonth}
               incomeCategories={incomeCategories}
               accounts={accounts}
+              language={language}
             />
           )}
           {activeTab === 'categories' && (
@@ -836,6 +842,7 @@ function App() {
               onAddCategory={handleAddCategory}
               onDeleteCategory={handleDeleteCategory}
               onRenameCategory={handleRenameCategory}
+              language={language}
             />
           )}
 

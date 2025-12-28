@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Transaction, MONTH_NAMES, AccountSummary } from '../types';
 import { formatDateColumn } from '../utils';
 import { generateSpendingInsights } from '../services/geminiService';
+import { getTranslation } from '../translations';
 
 interface AnalyticsViewProps {
   transactions: Transaction[];
@@ -10,6 +11,7 @@ interface AnalyticsViewProps {
   onMonthChange: (month: string) => void;
   incomeCategories: string[];
   accounts: AccountSummary[];
+  language: string;
 }
 
 const AnalyticsView: React.FC<AnalyticsViewProps> = ({
@@ -18,7 +20,8 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
   availableMonths,
   onMonthChange,
   incomeCategories,
-  accounts
+  accounts,
+  language
 }) => {
   const [insights, setInsights] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -263,7 +266,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
-          <h2 className="text-4xl font-black text-gray-900 dark:text-white capitalize tracking-tighter" style={{ fontFamily: "'Outfit', sans-serif" }}>Analytics</h2>
+          <h2 className="text-4xl font-black text-gray-900 dark:text-white capitalize tracking-tighter" style={{ fontFamily: "'Outfit', sans-serif" }}>{getTranslation(language, 'analytics')}</h2>
           <p className="text-gray-500 dark:text-gray-400 font-medium h-5">
             Insights for <span className="text-primary-dark dark:text-primary font-bold">{viewMode === 'all' ? 'FULL HISTORY' : currentMonth}</span>
           </p>
@@ -359,9 +362,9 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       {/* Financial Health Overlays */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Total Income', value: financialHealth.income, unit: 'BGN', color: 'text-gray-900 dark:text-white' },
-          { label: 'Total Expense', value: financialHealth.expense, unit: 'BGN', color: 'text-gray-900 dark:text-white' },
-          { label: 'Profitability', value: financialHealth.savingsRate.toFixed(1), unit: '%', color: financialHealth.savingsRate >= 20 ? 'text-primary-dark font-black' : 'text-orange-500 font-bold' },
+          { label: getTranslation(language, 'monthly_income'), value: financialHealth.income, unit: 'BGN', color: 'text-gray-900 dark:text-white' },
+          { label: getTranslation(language, 'monthly_expense'), value: financialHealth.expense, unit: 'BGN', color: 'text-gray-900 dark:text-white' },
+          { label: getTranslation(language, 'savings_rate'), value: financialHealth.savingsRate.toFixed(1), unit: '%', color: financialHealth.savingsRate >= 20 ? 'text-primary-dark font-black' : 'text-orange-500 font-bold' },
           { label: 'Burn Rate', value: Math.round(financialHealth.dailyAvg), unit: 'BGN/D', color: 'text-gray-900 dark:text-white' }
         ].map((card) => (
           <div key={card.label} className="bg-white dark:bg-gray-850 p-8 rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all">
@@ -465,7 +468,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
           <div className="flex justify-between items-center mb-12">
             <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tighter flex items-center">
               <div className="w-2 h-8 bg-gray-200 dark:bg-gray-700 rounded-full mr-4"></div>
-              Expense Breakdown
+              {getTranslation(language, 'category_breakdown')}
             </h3>
             <span className="text-[10px] font-black text-primary-dark uppercase tracking-widest bg-primary/10 px-4 py-2 rounded-full">
               {categoryBreakdown.total.toLocaleString()} BGN

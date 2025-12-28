@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Transaction, CategoryName, AccountSummary, MONTH_NAMES } from '../types';
+import { getTranslation } from '../translations';
 
 interface DashboardProps {
   transactions: Transaction[];
@@ -7,9 +8,10 @@ interface DashboardProps {
   availableMonths: string[];
   onMonthChange: (month: string) => void;
   accounts: AccountSummary[];
+  language: string;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMonthChange, accounts }) => {
+const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMonthChange, accounts, language }) => {
   const [excludedAccountNames, setExcludedAccountNames] = useState<string[]>([]);
 
   const toggleAccount = (name: string) => {
@@ -114,7 +116,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
         <div className="relative group overflow-hidden bg-gray-900 rounded-3xl p-8 border border-white/10 shadow-2xl">
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/30 transition-all duration-500"></div>
           <div className="relative z-10">
-            <h2 className="text-gray-400 text-sm font-semibold uppercase tracking-widest mb-4">Total Net Worth</h2>
+            <h2 className="text-gray-400 text-sm font-semibold uppercase tracking-widest mb-4">{getTranslation(language, 'net_worth')}</h2>
             <div className="flex items-baseline space-x-2">
               <span className="text-5xl font-black text-white tracking-tighter">
                 {netWorthInBGN.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -132,7 +134,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
         <div className="relative group overflow-hidden bg-white dark:bg-gray-850 rounded-3xl p-8 border border-gray-200 dark:border-white/5 shadow-xl transition-all hover:shadow-2xl">
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
           <div className="relative z-10">
-            <h2 className="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-widest mb-4">Expenses: {targetMonth}</h2>
+            <h2 className="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-widest mb-4">{getTranslation(language, 'expense')}: {targetMonth}</h2>
             <div className="flex items-baseline space-x-2">
               <span className="text-5xl font-black text-gray-900 dark:text-white tracking-tighter">
                 {monthlyExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -150,7 +152,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
               </div>
               <div className="h-10 w-1 bg-gray-100 dark:bg-gray-800 rounded-full"></div>
               <div className="text-xs text-right">
-                <span className="text-gray-600 dark:text-gray-400 block uppercase tracking-tighter">Income</span>
+                <span className="text-gray-600 dark:text-gray-400 block uppercase tracking-tighter">{getTranslation(language, 'income')}</span>
                 <span className="text-sm font-bold text-gray-900 dark:text-white">
                   {monthlyIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} BGN
                 </span>
@@ -167,7 +169,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
             <span className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
             </span>
-            <span>Account Performance</span>
+            <span>{getTranslation(language, 'account_performance')}</span>
           </h3>
           <div className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase bg-gray-100 dark:bg-gray-900 px-3 py-1 rounded-full">
             {targetMonth}
