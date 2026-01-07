@@ -158,6 +158,21 @@ function App() {
   });
 
   const [isDataLoading, setIsDataLoading] = useState(false);
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const mainContentRef = useRef<HTMLElement>(null);
+
+  const handleScroll = () => {
+    if (!mainContentRef.current) return;
+    const currentScrollY = mainContentRef.current.scrollTop;
+
+    if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+      setIsNavVisible(false);
+    } else {
+      setIsNavVisible(true);
+    }
+    lastScrollY.current = currentScrollY;
+  };
 
   // Sync Data with Supabase
   useEffect(() => {
@@ -914,9 +929,11 @@ function App() {
         </div>
       </aside>
 
-      {/* Mobile Bottom Navigation (Crystal Glass) */}
-      <div className="md:hidden fixed bottom-8 left-6 right-6 z-50">
-        <nav className="bg-white/20 dark:bg-black/40 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-full h-20 shadow-[0_20px_50px_rgba(0,0,0,0.2)] grid grid-cols-5 items-center overflow-hidden px-2">
+      {/* Mobile Bottom Navigation (Crystal Glass - Performance Optimized) */}
+      <div
+        className={`md:hidden fixed bottom-8 left-6 right-6 z-50 transform-gpu transition-all duration-500 will-change-transform ${isNavVisible ? 'translate-y-0 opacity-100' : 'translate-y-24 opacity-0'}`}
+      >
+        <nav className="bg-white/20 dark:bg-black/40 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-full h-20 shadow-[0_20px_50px_rgba(0,0,0,0.2)] grid grid-cols-5 items-center overflow-hidden px-2 py-safe">
           <MobileNavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon />} label={getTranslation(language, 'dashboard')} />
           <MobileNavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<TransactionsIcon />} label={getTranslation(language, 'transactions')} />
 
@@ -932,7 +949,11 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto h-screen scroll-smooth">
+      <main
+        ref={mainContentRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto h-screen scroll-smooth"
+      >
         <div className="max-w-7xl mx-auto p-6 pt-24 pb-32 md:p-12 md:pt-12 md:pb-12">
           <header className="hidden md:flex justify-between items-center mb-12">
             <div>
