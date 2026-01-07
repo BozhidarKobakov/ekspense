@@ -188,81 +188,88 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -ml-16 -mb-16 group-hover:bg-secondary/20 transition-all duration-500"></div>
         {isOverspent && <div className="absolute inset-0 bg-red-500/5 pointer-events-none"></div>}
 
-        <div className="relative z-10 flex flex-col-reverse md:flex-row items-center justify-between gap-8">
-          {/* Left: Text Content */}
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-start gap-8 md:gap-12">
+          {/* Left: Progress Ring */}
+          <div className="relative flex-shrink-0">
+            <div className="relative">
+              <ProgressRing
+                progress={spentPercentage}
+                size={160}
+                strokeWidth={14}
+                color={getRingColor()}
+              />
+              {/* Center content */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">Limit</span>
+                <span className="text-xl font-black text-white tracking-tight leading-none">
+                  {spendingLimit.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                </span>
+                <span className="text-[9px] font-bold text-gray-500 uppercase mt-1">BGN</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Text Content */}
           <div className="flex-1 text-center md:text-left w-full">
-            {/* Status Label */}
-            <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.15em] mb-4 ${isOverspent ? 'bg-red-500/20 text-red-400' : 'bg-primary/10 text-primary'}`}>
-              <div className={`w-2 h-2 rounded-full ${isOverspent ? 'bg-red-500 animate-pulse' : 'bg-primary animate-pulse'}`}></div>
-              <span>{isOverspent ? 'BUDGET EXCEEDED' : 'YOU ARE SAFE TO SPEND'}</span>
+            {/* Status & Limit Edit Trigger */}
+            <div className="flex flex-col md:flex-row items-center md:items-start md:justify-between gap-4 mb-6">
+              <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.15em] ${isOverspent ? 'bg-red-500/20 text-red-400' : 'bg-primary/10 text-primary'}`}>
+                <div className={`w-2 h-2 rounded-full ${isOverspent ? 'bg-red-500 animate-pulse' : 'bg-primary animate-pulse'}`}></div>
+                <span>{isOverspent ? 'BUDGET EXCEEDED' : 'YOU ARE SAFE TO SPEND'}</span>
+              </div>
+
+              <button
+                onClick={() => {
+                  setIsEditingLimit(true);
+                  setCustomLimitInput(spendingLimit.toString());
+                }}
+                className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/5"
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                <span>Adjust Limit</span>
+              </button>
             </div>
 
             {/* Main Amount */}
-            <div className="mb-4">
+            <div className="mb-6">
               {isOverspent ? (
                 <>
-                  <p className="text-red-400 text-sm font-bold uppercase tracking-widest mb-1">Overspent by</p>
+                  <p className="text-red-400/60 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Overspent by</p>
                   <div className="flex items-baseline justify-center md:justify-start space-x-2">
-                    <span className="text-5xl md:text-6xl font-black text-red-400 tracking-tighter">
+                    <span className="text-5xl md:text-7xl font-black text-red-400 tracking-tighter">
                       {Math.abs(safeToSpend).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
-                    <span className="text-xl font-bold text-red-400/60">BGN</span>
+                    <span className="text-xl font-bold text-red-500/40">BGN</span>
                   </div>
                 </>
               ) : (
                 <div className="flex items-baseline justify-center md:justify-start space-x-2">
-                  <span className="text-5xl md:text-6xl font-black text-white tracking-tighter">
+                  <span className="text-5xl md:text-7xl font-black text-white tracking-tighter shadow-sm">
                     {safeToSpend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
-                  <span className="text-xl font-bold text-primary">BGN</span>
+                  <span className="text-xl font-bold text-primary shadow-sm">BGN</span>
                 </div>
               )}
             </div>
 
             {/* Spent Indicator */}
-            <div className="flex items-center justify-center md:justify-start space-x-3 text-sm">
-              <div className="flex items-center space-x-2 bg-white/5 rounded-full px-4 py-2">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <span className="text-gray-400 font-medium">Spent:</span>
-                <span className="text-white font-black">{monthlyExpenses.toLocaleString(undefined, { minimumFractionDigits: 2 })} BGN</span>
+            <div className="flex flex-col md:flex-row items-center md:justify-start gap-4">
+              <div className="flex items-center space-x-3 bg-white/5 rounded-2xl px-5 py-3 border border-white/5">
+                <div className="p-2 bg-white/5 rounded-lg">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest block leading-none mb-1">Spent Overall</span>
+                  <span className="text-lg font-black text-white leading-none">{monthlyExpenses.toLocaleString(undefined, { minimumFractionDigits: 2 })} <span className="text-xs font-bold text-gray-500">BGN</span></span>
+                </div>
               </div>
+
+              <div className="hidden md:block h-10 w-px bg-white/5"></div>
+
+              <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em]">{targetMonth}</p>
             </div>
-
-            {/* Month indicator */}
-            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-4">{targetMonth}</p>
-          </div>
-
-          {/* Right: Progress Ring */}
-          <div className="relative flex-shrink-0">
-            <div className="relative">
-              <ProgressRing
-                progress={spentPercentage}
-                size={140}
-                strokeWidth={12}
-                color={getRingColor()}
-              />
-              {/* Center content */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Limit</span>
-                <span className="text-lg font-black text-white tracking-tight">
-                  {spendingLimit.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                </span>
-                <span className="text-[9px] font-bold text-gray-500">BGN</span>
-              </div>
-            </div>
-
-            {/* Edit Limit Button */}
-            <button
-              onClick={() => {
-                setIsEditingLimit(true);
-                setCustomLimitInput(spendingLimit.toString());
-              }}
-              className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white/10 hover:bg-white/20 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full transition-all border border-white/10 hover:border-white/20"
-            >
-              {customLimit !== null ? 'Edit' : 'Set'} Limit
-            </button>
           </div>
         </div>
 
