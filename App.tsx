@@ -1076,7 +1076,7 @@ function App() {
                 <button
                   type="button"
                   onClick={() => setShowCalendar(!showCalendar)}
-                  className={`w-full h-12 flex items-center justify-between bg-white dark:bg-gray-850 border border-gray-200 dark:border-white/5 rounded-xl px-4 transition-all group ${entryType === 'expense' ? 'hover:border-red-500/30' : entryType === 'income' ? 'hover:border-primary/30' : 'hover:border-blue-500/30'
+                  className={`w-full h-12 flex items-center justify-between bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-xl px-4 transition-all group ${entryType === 'expense' ? 'hover:border-red-500/30' : entryType === 'income' ? 'hover:border-primary/30' : 'hover:border-blue-500/30'
                     }`}
                 >
                   <div className="flex items-center space-x-3">
@@ -1099,7 +1099,7 @@ function App() {
                 </button>
 
                 {showCalendar && (
-                  <div className="mt-3 bg-white dark:bg-gray-850 border border-gray-200 dark:border-white/5 rounded-[2.5rem] p-5 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300">
+                  <div className="mt-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-[2.5rem] p-5 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300">
                     <div className="flex items-center justify-between mb-6 px-2">
                       <div className="flex flex-col">
                         <span className={`text-xs font-black uppercase tracking-[0.2em] ${entryType === 'expense' ? 'text-red-500' : entryType === 'income' ? 'text-primary-dark' : 'text-blue-500'
@@ -1231,7 +1231,7 @@ function App() {
                   placeholder="e.g. Weekly Groceries"
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
-                  className={`w-full h-12 bg-white dark:bg-gray-850 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-xl px-4 focus:ring-2 outline-none placeholder:text-gray-400 font-bold shadow-sm focus:bg-white/10 transition-all ${entryType === 'expense' ? 'focus:ring-red-500 hover:border-red-500/30' : entryType === 'income' ? 'focus:ring-primary hover:border-primary/30' : 'focus:ring-blue-500 hover:border-blue-500/30'
+                  className={`w-full h-12 bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-xl px-4 focus:ring-2 outline-none placeholder:text-gray-400 font-bold shadow-sm focus:bg-white/10 transition-all ${entryType === 'expense' ? 'focus:ring-red-500 hover:border-red-500/30' : entryType === 'income' ? 'focus:ring-primary hover:border-primary/30' : 'focus:ring-blue-500 hover:border-blue-500/30'
                     }`}
                 />
               </div>
@@ -1249,7 +1249,7 @@ function App() {
                       placeholder="Source..."
                       value={newFrom}
                       onChange={(e) => setNewFrom(e.target.value)}
-                      className={`w-full h-12 bg-white dark:bg-gray-850 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-xl px-4 focus:ring-2 outline-none font-bold placeholder:text-gray-400 shadow-sm focus:bg-white/10 transition-all ${entryType === 'expense' ? 'focus:ring-red-500 hover:border-red-500/30' : entryType === 'income' ? 'focus:ring-primary hover:border-primary/30' : 'focus:ring-blue-500 hover:border-blue-500/30'
+                      className={`w-full h-12 bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-xl px-4 focus:ring-2 outline-none font-bold placeholder:text-gray-400 shadow-sm focus:bg-white/10 transition-all ${entryType === 'expense' ? 'focus:ring-red-500 hover:border-red-500/30' : entryType === 'income' ? 'focus:ring-primary hover:border-primary/30' : 'focus:ring-blue-500 hover:border-blue-500/30'
                         }`}
                     />
                   ) : (
@@ -1310,7 +1310,7 @@ function App() {
                         placeholder="Recipient..."
                         value={newTo}
                         onChange={(e) => setNewTo(e.target.value)}
-                        className={`w-full h-12 bg-white dark:bg-gray-850 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-xl px-4 focus:ring-2 outline-none font-bold placeholder:text-gray-400 shadow-sm focus:bg-white/10 transition-all ${entryType === 'expense' ? 'focus:ring-red-500 hover:border-red-500/30' : entryType === 'income' ? 'focus:ring-primary hover:border-primary/30' : 'focus:ring-blue-500 hover:border-blue-500/30'
+                        className={`w-full h-12 bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-xl px-4 focus:ring-2 outline-none font-bold placeholder:text-gray-400 shadow-sm focus:bg-white/10 transition-all ${entryType === 'expense' ? 'focus:ring-red-500 hover:border-red-500/30' : entryType === 'income' ? 'focus:ring-primary hover:border-primary/30' : 'focus:ring-blue-500 hover:border-blue-500/30'
                           }`}
                       />
                     ) : (
@@ -1368,7 +1368,7 @@ function App() {
                     step="0.01"
                     value={newAmount}
                     onChange={(e) => setNewAmount(e.target.value)}
-                    className={`w-full h-12 bg-white dark:bg-gray-850 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-xl px-4 focus:ring-2 outline-none font-bold placeholder:text-gray-400 shadow-sm focus:bg-white/10 transition-all ${entryType === 'expense' ? 'focus:ring-red-500 hover:border-red-500/30' : entryType === 'income' ? 'focus:ring-primary hover:border-primary/30' : 'focus:ring-blue-500 hover:border-blue-500/30'
+                    className={`w-full h-12 bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-xl px-4 focus:ring-2 outline-none font-bold placeholder:text-gray-400 shadow-sm focus:bg-white/10 transition-all ${entryType === 'expense' ? 'focus:ring-red-500 hover:border-red-500/30' : entryType === 'income' ? 'focus:ring-primary hover:border-primary/30' : 'focus:ring-blue-500 hover:border-blue-500/30'
                       }`}
                     placeholder="0.00"
                   />
@@ -1448,7 +1448,7 @@ function App() {
       {/* Account Deletion Confirmation Modal */}
       {accountToDelete && (
         <div className="fixed inset-0 bg-gray-950/80 flex items-center justify-center z-[160] backdrop-blur-md p-4 animate-in fade-in duration-300">
-          <div className="bg-gray-950 border border-white/10 rounded-[2rem] p-6 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-300">
+          <div className="bg-gray-900 border border-white/10 rounded-[2rem] p-6 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-300">
             <div className="w-14 h-14 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-red-500/20">
               <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
             </div>
@@ -1585,7 +1585,7 @@ function App() {
                     placeholder="e.g. Daily spending"
                     value={newAccName}
                     onChange={e => setNewAccName(e.target.value)}
-                    className="w-full h-12 bg-gray-50 dark:bg-gray-850 border border-gray-200 dark:border-white/5 rounded-xl pl-12 pr-4 text-xs font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-800"
+                    className="w-full h-12 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-xl pl-12 pr-4 text-xs font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-800"
                     autoFocus
                   />
                 </div>
@@ -1620,7 +1620,7 @@ function App() {
                     <select
                       value={newAccType}
                       onChange={e => setNewAccType(e.target.value as any)}
-                      className="w-full h-12 bg-gray-50 dark:bg-gray-850 border border-gray-200 dark:border-white/5 rounded-xl pl-12 pr-4 text-xs font-bold uppercase text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer focus:bg-white dark:focus:bg-gray-800 dark:text-white"
+                      className="w-full h-12 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-xl pl-12 pr-4 text-xs font-bold uppercase text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer focus:bg-white dark:focus:bg-gray-800 dark:text-white"
                     >
                       <option value="fiat" className="bg-white dark:bg-gray-900">Fiat</option>
                       <option value="savings" className="bg-white dark:bg-gray-900">Savings</option>
@@ -1642,7 +1642,7 @@ function App() {
                       placeholder="BGN"
                       value={newAccCurrency}
                       onChange={e => setNewAccCurrency(e.target.value)}
-                      className="w-full h-12 bg-gray-50 dark:bg-gray-850 border border-gray-200 dark:border-white/5 rounded-xl pl-12 pr-4 text-xs font-bold uppercase text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-800"
+                      className="w-full h-12 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-xl pl-12 pr-4 text-xs font-bold uppercase text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-800"
                     />
                   </div>
                 </div>

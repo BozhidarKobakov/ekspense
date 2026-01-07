@@ -172,7 +172,7 @@ const CategoriesView: React.FC<CategoriesViewProps> = ({
                                         value={newName}
                                         onChange={(e) => setNewName(e.target.value)}
                                         placeholder="e.g. Subscriptions"
-                                        className="w-full bg-white dark:bg-gray-850 border border-gray-200 dark:border-white/10 rounded-2xl p-4 text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-primary transition-all placeholder:text-gray-400 shadow-sm"
+                                        className="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl p-4 text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-primary transition-all placeholder:text-gray-400 shadow-sm"
                                     />
                                 </div>
                                 <button

@@ -16,23 +16,32 @@
           },
           colors: {
             primary: {
-              DEFAULT: '#bef264', // lime-300
-              light: '#ecfccb', // lime-100
-              dark: '#84cc16', // lime-500
+              DEFAULT: '#39fb48', // Neon Green
+              light: '#d4ffdb', // Soft mint for light mode accents
+              dark: '#2ad838', // Deeper green for contrast
+              surface: 'rgba(57, 251, 72, 0.1)',
+            },
+            secondary: {
+              DEFAULT: '#00e5ff', // Cyber Cyan
+              dark: '#00b8cc',
+            },
+            accent: {
+              DEFAULT: '#d946ef', // Electric Fuchsia
+              dark: '#b53ab8',
             },
             gray: {
-              50: '#f8fafc',
-              100: '#f1f5f9',
-              200: '#e2e8f0',
-              300: '#cbd5e1',
-              400: '#94a3b8',
-              500: '#64748b',
-              600: '#475569',
-              700: '#334155',
-              800: '#1e293b',
-              850: '#111112',
-              900: '#202022',
-              950: '#000000',
+              50: '#f9fafb',
+              100: '#f3f4f6',
+              200: '#e5e7eb',
+              300: '#d1d5db',
+              400: '#9ca3af',
+              500: '#6b7280',
+              600: '#4b5563',
+              700: '#374151',
+              800: '#1f2937',
+              850: '#111827', // Rich deep slate/black
+              900: '#0f172a', // Deep navy/black
+              950: '#020617', // Purest dark
             }
           },
           animation: {
@@ -56,16 +65,16 @@
     }
 
     .dark ::-webkit-scrollbar-track {
-      background: #1e293b;
+      background: #0f172a;
     }
 
     .dark ::-webkit-scrollbar-thumb {
-      background: #475569;
+      background: #374151;
       border-radius: 4px;
     }
 
     .dark ::-webkit-scrollbar-thumb:hover {
-      background: #64748b;
+      background: #4b5563;
     }
 
     /* Hide number input arrows */
@@ -78,6 +87,24 @@
     input[type=number] {
       -moz-appearance: textfield;
       appearance: textfield;
+    }
+
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .gradient-text {
+      background: linear-gradient(to right, #39fb48, #00e5ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .neon-border {
+      box-shadow: 0 0 15px rgba(57, 251, 72, 0.3);
     }
   </style>
 </head>

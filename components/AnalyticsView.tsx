@@ -277,7 +277,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
           <div className="relative flex-1 md:flex-none">
             <button
               onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
-              className="w-full bg-white dark:bg-gray-850 border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white py-4 px-6 rounded-3xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex justify-between items-center min-w-[180px]"
+              className="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white py-4 px-6 rounded-3xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex justify-between items-center min-w-[180px]"
             >
               <span className="truncate">
                 {selectedAccountNames.length === 0 ? 'All Accounts' :
@@ -290,7 +290,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
             </button>
 
             {accountDropdownOpen && (
-              <div className="absolute top-full mt-2 left-0 right-0 bg-white dark:bg-gray-850 border border-gray-100 dark:border-white/5 rounded-3xl shadow-2xl z-50 p-3 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+              <div className="absolute top-full mt-2 left-0 right-0 bg-white dark:bg-gray-900 border border-gray-100 dark:border-white/5 rounded-3xl shadow-2xl z-50 p-3 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
                 <button
                   onClick={() => {
                     setSelectedAccountNames([]);
@@ -327,7 +327,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
             <select
               value={viewMode === 'all' ? 'all' : currentMonth}
               onChange={handleViewChange}
-              className="appearance-none w-full bg-white dark:bg-gray-850 border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white py-4 pl-6 pr-12 rounded-3xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer"
+              className="appearance-none w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white py-4 pl-6 pr-12 rounded-3xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer"
             >
               <option value="all">Full Timeline</option>
               <optgroup label="Monthly Periods">
@@ -364,12 +364,13 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
         {[
           { label: getTranslation(language, 'monthly_income'), value: financialHealth.income, unit: 'BGN', color: 'text-gray-900 dark:text-white' },
           { label: getTranslation(language, 'monthly_expense'), value: financialHealth.expense, unit: 'BGN', color: 'text-gray-900 dark:text-white' },
-          { label: getTranslation(language, 'savings_rate'), value: financialHealth.savingsRate.toFixed(1), unit: '%', color: financialHealth.savingsRate >= 20 ? 'text-primary-dark font-black' : 'text-orange-500 font-bold' },
-          { label: 'Burn Rate', value: Math.round(financialHealth.dailyAvg), unit: 'BGN/D', color: 'text-gray-900 dark:text-white' }
+          { label: getTranslation(language, 'savings_rate'), value: financialHealth.savingsRate.toFixed(1), unit: '%', color: financialHealth.savingsRate >= 20 ? 'text-primary' : 'text-accent' },
+          { label: 'Burn Rate', value: Math.round(financialHealth.dailyAvg), unit: 'BGN/D', color: 'text-secondary' }
         ].map((card) => (
-          <div key={card.label} className="bg-white dark:bg-gray-850 p-8 rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all">
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{card.label}</span>
-            <div className="mt-2 flex items-baseline space-x-1">
+          <div key={card.label} className="bg-white dark:bg-gray-950 p-8 rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all"></div>
+            <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] relative z-10">{card.label}</span>
+            <div className="mt-2 flex items-baseline space-x-1 relative z-10">
               <span className={`text-3xl font-black tracking-tighter ${card.color}`}>{card.value.toLocaleString()}</span>
               <span className="text-[10px] font-bold text-gray-400 uppercase">{card.unit}</span>
             </div>
@@ -402,7 +403,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       {/* Visual Analytics Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Momentum Chart */}
-        <div className="bg-white dark:bg-gray-850 p-8 rounded-[3rem] border border-gray-100 dark:border-white/5 shadow-sm relative group overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 p-8 rounded-[3rem] border border-gray-100 dark:border-white/5 shadow-sm relative group overflow-hidden">
           <div className="flex justify-between items-center mb-12 relative z-10">
             <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tighter flex items-center">
               <div className="w-2 h-8 bg-primary rounded-full mr-4 shadow-[0_0_15px_rgba(180,255,0,0.5)]"></div>
@@ -464,7 +465,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
         </div>
 
         {/* Volume Distribution */}
-        <div className="bg-white dark:bg-gray-850 p-8 rounded-[3rem] border border-gray-100 dark:border-white/5 shadow-sm">
+        <div className="bg-white dark:bg-gray-900 p-8 rounded-[3rem] border border-gray-100 dark:border-white/5 shadow-sm">
           <div className="flex justify-between items-center mb-12">
             <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tighter flex items-center">
               <div className="w-2 h-8 bg-gray-200 dark:bg-gray-700 rounded-full mr-4"></div>
@@ -501,7 +502,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       </div>
 
       {/* Transaction Records */}
-      <div className="bg-white dark:bg-gray-850 rounded-[3rem] border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 rounded-[3rem] border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
         <div className="p-10 border-b border-gray-100 dark:border-white/5 flex justify-between items-center">
           <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">Large Capital Outflows</h3>
           <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 dark:bg-gray-900 px-4 py-2 rounded-full border border-gray-100 dark:border-white/5">TOP 5 AUDIT</span>

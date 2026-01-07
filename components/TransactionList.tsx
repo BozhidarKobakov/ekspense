@@ -138,7 +138,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onUpdat
             placeholder="Search description, amount..."
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
-            className="pl-10 block w-full border border-gray-200 dark:border-white/5 bg-white dark:bg-gray-850 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-primary outline-none text-gray-900 dark:text-gray-100 transition-all shadow-sm"
+            className="pl-10 block w-full border border-gray-200 dark:border-white/5 bg-white dark:bg-gray-900 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-primary outline-none text-gray-900 dark:text-gray-100 transition-all shadow-sm"
           />
         </div>
 

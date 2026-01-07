@@ -30,7 +30,7 @@ const AccountsView: React.FC<AccountsViewProps> = ({ transactions, accounts, onA
       {accounts.map((acc) => {
         const balance = getBalance(acc.name);
         return (
-          <div key={acc.name} className="bg-white dark:bg-gray-850 rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-lg transition-all group relative overflow-hidden flex flex-col justify-between h-[120px]">
+          <div key={acc.name} className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-lg transition-all group relative overflow-hidden flex flex-col justify-between h-[120px]">
             {/* Minimal Background Decoration */}
             <div className="absolute -right-4 -top-4 w-16 h-16 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all pointer-events-none"></div>
 

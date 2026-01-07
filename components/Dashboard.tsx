@@ -113,8 +113,9 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
       {/* 1. Primary Highlight: NET WORTH & MONTHLY EXPENSES */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Net Worth Card */}
-        <div className="relative group overflow-hidden bg-gray-900 rounded-3xl p-8 border border-white/10 shadow-2xl">
+        <div className="relative group overflow-hidden bg-gray-950 rounded-3xl p-8 border border-white/10 shadow-2xl">
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/30 transition-all duration-500"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-secondary/10 rounded-full blur-2xl -ml-12 -mb-12 group-hover:bg-secondary/20 transition-all duration-500"></div>
           <div className="relative z-10">
             <h2 className="text-gray-400 text-sm font-semibold uppercase tracking-widest mb-4">{getTranslation(language, 'net_worth')}</h2>
             <div className="flex items-baseline space-x-2">
@@ -131,7 +132,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
         </div>
 
         {/* Monthly Expense Card */}
-        <div className="relative group overflow-hidden bg-white dark:bg-gray-850 rounded-3xl p-8 border border-gray-200 dark:border-white/5 shadow-xl transition-all hover:shadow-2xl">
+        <div className="relative group overflow-hidden bg-white dark:bg-gray-900 rounded-3xl p-8 border border-gray-200 dark:border-white/5 shadow-xl transition-all hover:shadow-2xl">
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
           <div className="relative z-10">
             <h2 className="text-gray-500 dark:text-gray-400 text-sm font-semibold uppercase tracking-widest mb-4">{getTranslation(language, 'expense')}: {targetMonth}</h2>
@@ -145,7 +146,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
               <div className="flex items-center space-x-4">
                 <div className="text-xs">
                   <span className="text-gray-600 dark:text-gray-400 block uppercase tracking-tighter">Savings Potential</span>
-                  <span className="text-sm font-bold text-primary-dark">
+                  <span className="text-sm font-black text-secondary">
                     {(monthlyIncome - monthlyExpenses).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} BGN
                   </span>
                 </div>
@@ -176,7 +177,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-850 rounded-[2rem] border border-gray-200 dark:border-white/5 shadow-xl overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-white/5 shadow-xl overflow-hidden">
           <div className="overflow-x-auto scrollbar-hide">
             <table className="w-full text-left border-collapse tabular-nums">
               <thead>
