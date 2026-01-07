@@ -119,15 +119,27 @@ function App() {
   // Initialize accounts from localStorage
   const [accounts, setAccounts] = useState<AccountSummary[]>([]);
 
-  // Proactive fix for Revolut name and EUR currency as requested
+  // Proactive fix for Currency and Account Names
   useEffect(() => {
-    const normalize = accounts.map(a =>
-      a.name.toLowerCase() === 'revolut'
-        ? { ...a, name: 'Revolut', currency: 'EUR' }
-        : a
-    );
+    const normalize = accounts.map(a => {
+      let updated = { ...a };
+      let changed = false;
 
-    // Only update if something actually changed to avoid loop
+      // 1. Force BGN to EUR migration
+      if (a.currency === 'BGN') {
+        updated.currency = 'EUR';
+        changed = true;
+      }
+
+      // 2. Ensure Revolut is correctly named
+      if (a.name.toLowerCase() === 'revolut' && a.name !== 'Revolut') {
+        updated.name = 'Revolut';
+        changed = true;
+      }
+
+      return changed ? updated : a;
+    });
+
     if (JSON.stringify(normalize) !== JSON.stringify(accounts)) {
       setAccounts(normalize);
     }

@@ -232,7 +232,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
 
                 <div className="flex items-center text-[9px] font-black uppercase tracking-[0.2em]">
                   <span className="text-gray-400 dark:text-white/20">Spent:</span>
-                  <span className="text-gray-900 dark:text-white/60 ml-1.5">{monthlyExpenses.toLocaleString(undefined, { maximumFractionDigits: 0 })} <span className="text-[8px] opacity-30">Eur</span></span>
+                  <span className="text-gray-900 dark:text-white/60 ml-1.5">{monthlyExpenses.toLocaleString(undefined, { maximumFractionDigits: 0 })} <span className="text-[8px] opacity-30">EUR</span></span>
                 </div>
               </div>
             </div>
@@ -252,14 +252,14 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
                   <span className="text-5xl md:text-[80px] font-black text-red-500 tracking-tighter leading-none">
                     {Math.abs(safeToSpend).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
-                  <span className="text-xl font-black text-red-500/40 uppercase">Bgn</span>
+                  <span className="text-xl font-black text-red-500/40 uppercase">EUR</span>
                 </div>
               ) : (
                 <div className="flex items-baseline justify-center md:justify-start space-x-2">
                   <span className="text-5xl md:text-[80px] font-black text-gray-900 dark:text-white tracking-tighter leading-none">
                     {safeToSpend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
-                  <span className="text-xl font-black text-primary uppercase">Bgn</span>
+                  <span className="text-xl font-black text-primary uppercase">EUR</span>
                 </div>
               )}
             </div>
