@@ -153,6 +153,13 @@ function App() {
     localStorage.setItem('ekspence_income_categories', JSON.stringify(incomeCategories));
   }, [expenseCategories, incomeCategories]);
 
+  useEffect(() => {
+    if (!session) {
+      localStorage.setItem('ekspence_accounts', JSON.stringify(accounts));
+      localStorage.setItem('ekspence_transactions', JSON.stringify(transactions));
+    }
+  }, [accounts, transactions, session]);
+
   const [targetMonth, setTargetMonth] = useState(() => {
     return localStorage.getItem('ekspence_target_month') || 'Dec-2025';
   });
@@ -409,7 +416,10 @@ function App() {
       }
     } else {
       // CREATE new transaction
-      const newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9);
+      const newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
       const newTrans: Transaction = {
         id: newId,
         date: dateObj,
@@ -431,7 +441,12 @@ function App() {
           to_account: finalTo,
           amount: parseFloat(newAmount),
           category: newCategory
-        }).then();
+        }).then(({ error }) => {
+          if (error) {
+            console.error("Supabase Insert Error:", error);
+            triggerFeedback('error', 'Failed to sync with cloud');
+          }
+        });
       }
     }
 
@@ -477,11 +492,22 @@ function App() {
   };
 
   const handleDeleteTransaction = async (id: string) => {
-    // Directly delete without confirmation dialog to ensure functionality works
+    const transactionToDelete = transactions.find(t => String(t.id) === String(id));
+    if (!transactionToDelete) return;
+
+    // Optimistic UI update
     setTransactions(prev => prev.filter(t => String(t.id) !== String(id)));
 
     if (session) {
-      await supabase.from('transactions').delete().eq('id', id);
+      const { error } = await supabase.from('transactions').delete().eq('id', id);
+
+      if (error) {
+        console.error("Supabase Delete Error:", error);
+        // Revert local state if cloud delete fails
+        setTransactions(prev => [transactionToDelete, ...prev].sort((a, b) => b.date.getTime() - a.date.getTime()));
+        triggerFeedback('error', 'Failed to delete from cloud');
+        return;
+      }
     }
 
     triggerFeedback('success', 'Entry deleted');
@@ -762,7 +788,7 @@ function App() {
       onClick={onClick}
       className={`flex items-center justify-center h-full w-full transition-all duration-300 ${active ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
     >
-      <div className={`flex flex-col items-center justify-center transition-all duration-300 rounded-full w-16 h-16 ${active && !isCenter ? 'bg-black/5 dark:bg-white/10' : ''}`}>
+      <div className={`flex flex-col items-center justify-center transition-all duration-300 rounded-full w-[72px] h-[72px] ${active && !isCenter ? 'bg-black/5 dark:bg-white/10' : ''}`}>
         <div className={`transition-transform duration-300 ${active ? 'scale-110' : 'scale-100'}`}>
           {React.cloneElement(icon, { className: 'w-6 h-6' })}
         </div>
@@ -929,11 +955,11 @@ function App() {
         </div>
       </aside>
 
-      {/* Mobile Bottom Navigation (Crystal Glass - Absolute Symmetry Upscaled) */}
+      {/* Mobile Bottom Navigation (Crystal Glass - Elite Symmetry 88) */}
       <div
         className={`md:hidden fixed bottom-8 left-0 right-0 px-4 z-50 transform-gpu transition-all duration-500 will-change-transform ${isNavVisible ? 'translate-y-0 opacity-100' : 'translate-y-24 opacity-0'}`}
       >
-        <nav className="mx-auto max-w-[400px] bg-white/20 dark:bg-black/40 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-full h-20 shadow-[0_20px_50px_rgba(0,0,0,0.2)] grid grid-cols-5 items-center overflow-hidden">
+        <nav className="mx-auto max-w-[440px] bg-white/20 dark:bg-black/40 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-full h-[88px] shadow-[0_20px_50px_rgba(0,0,0,0.2)] grid grid-cols-5 items-center overflow-hidden">
           <MobileNavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon />} label={getTranslation(language, 'dashboard')} />
           <MobileNavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<TransactionsIcon />} label={getTranslation(language, 'transactions')} />
 
