@@ -859,7 +859,7 @@ function App() {
         </div>
 
         <nav className="py-6 space-y-4 flex-1 overflow-x-hidden">
-          <NavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon className="w-6 h-6" />} label={getTranslation(language, 'overview')} />
+          <NavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon className="w-6 h-6" />} label={getTranslation(language, 'dashboard')} />
           <NavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<TransactionsIcon className="w-6 h-6" />} label={getTranslation(language, 'transactions')} />
           <NavButton active={activeTab === 'accounts'} onClick={() => setActiveTab('accounts')} icon={<AccountsIcon className="w-6 h-6" />} label={getTranslation(language, 'accounts')} />
           <NavButton active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={<AnalyticsIcon className="w-6 h-6" />} label={getTranslation(language, 'analytics')} />
@@ -914,7 +914,7 @@ function App() {
 
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-6 left-6 right-6 bg-gray-900/90 backdrop-blur-xl border border-white/10 rounded-3xl z-50 flex justify-around items-center h-20 px-2 shadow-2xl">
-        <MobileNavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon />} label="Home" />
+        <MobileNavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon />} label={getTranslation(language, 'dashboard')} />
         <MobileNavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<TransactionsIcon />} label="Transactions" />
         <MobileNavButton active={activeTab === 'accounts'} onClick={() => setActiveTab('accounts')} icon={<AccountsIcon />} label="Accounts" />
         <MobileNavButton active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={<AnalyticsIcon />} label="Data" />
