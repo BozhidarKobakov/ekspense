@@ -362,10 +362,10 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       {/* Financial Health Overlays */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: getTranslation(language, 'monthly_income'), value: financialHealth.income, unit: 'BGN', color: 'text-gray-900 dark:text-white' },
-          { label: getTranslation(language, 'monthly_expense'), value: financialHealth.expense, unit: 'BGN', color: 'text-gray-900 dark:text-white' },
+          { label: getTranslation(language, 'monthly_income'), value: financialHealth.income, unit: 'EUR', color: 'text-gray-900 dark:text-white' },
+          { label: getTranslation(language, 'monthly_expense'), value: financialHealth.expense, unit: 'EUR', color: 'text-gray-900 dark:text-white' },
           { label: getTranslation(language, 'savings_rate'), value: financialHealth.savingsRate.toFixed(1), unit: '%', color: financialHealth.savingsRate >= 20 ? 'text-primary' : 'text-accent' },
-          { label: 'Burn Rate', value: Math.round(financialHealth.dailyAvg), unit: 'BGN/D', color: 'text-secondary' }
+          { label: 'Burn Rate', value: Math.round(financialHealth.dailyAvg), unit: 'EUR/D', color: 'text-secondary' }
         ].map((card) => (
           <div key={card.label} className="bg-white dark:bg-gray-950 p-8 rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all"></div>
@@ -410,7 +410,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               Spending Momentum
             </h3>
             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 dark:bg-gray-950 px-4 py-2 rounded-full border border-gray-100 dark:border-white/5">
-              MAX PEAK {maxTrendAmount.toLocaleString()} BGN
+              MAX PEAK {maxTrendAmount.toLocaleString()} EUR
             </span>
           </div>
 
@@ -432,7 +432,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                     {/* Tooltip */}
                     <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover/bar:opacity-100 transition-all pointer-events-none z-20">
                       <div className="bg-gray-900 dark:bg-white text-white dark:text-gray-950 text-[9px] font-black px-3 py-1.5 rounded-lg whitespace-nowrap shadow-xl">
-                        {item.amount.toLocaleString()} BGN
+                        {item.amount.toLocaleString()} EUR
                       </div>
                       <div className="w-2 h-2 bg-gray-900 dark:bg-white rotate-45 mx-auto -mt-1"></div>
                     </div>
@@ -472,7 +472,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               {getTranslation(language, 'category_breakdown')}
             </h3>
             <span className="text-[10px] font-black text-primary-dark uppercase tracking-widest bg-primary/10 px-4 py-2 rounded-full">
-              {categoryBreakdown.total.toLocaleString()} BGN
+              {categoryBreakdown.total.toLocaleString()} EUR
             </span>
           </div>
 
@@ -530,7 +530,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                     <span className="text-[10px] font-black text-primary-dark bg-primary/10 px-4 py-2 rounded-full uppercase tracking-[0.2em] border border-primary/20">{t.category}</span>
                   </td>
                   <td className="px-10 py-8 text-right font-black text-gray-900 dark:text-white text-2xl tracking-tighter">
-                    {t.amount.toLocaleString()} <span className="text-xs text-gray-400 uppercase">BGN</span>
+                    {t.amount.toLocaleString()} <span className="text-xs text-gray-400 uppercase">EUR</span>
                   </td>
                 </tr>
               ))}

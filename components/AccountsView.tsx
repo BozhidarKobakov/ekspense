@@ -44,7 +44,7 @@ const AccountsView: React.FC<AccountsViewProps> = ({ transactions, accounts, onA
               <span className="text-4xl md:text-5xl font-black text-white tracking-tighter">
                 {netWorth.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
-              <span className="text-xl font-bold text-primary">BGN</span>
+              <span className="text-xl font-bold text-primary">EUR</span>
             </div>
           </div>
 

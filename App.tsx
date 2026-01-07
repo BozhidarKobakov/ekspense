@@ -119,11 +119,11 @@ function App() {
   // Initialize accounts from localStorage
   const [accounts, setAccounts] = useState<AccountSummary[]>([]);
 
-  // Proactive fix for Revolut name and BGN currency as requested
+  // Proactive fix for Revolut name and EUR currency as requested
   useEffect(() => {
     const normalize = accounts.map(a =>
       a.name.toLowerCase() === 'revolut'
-        ? { ...a, name: 'Revolut', currency: 'BGN' }
+        ? { ...a, name: 'Revolut', currency: 'EUR' }
         : a
     );
 
@@ -261,7 +261,7 @@ function App() {
   const [editingAccount, setEditingAccount] = useState<AccountSummary | null>(null);
   const [newAccName, setNewAccName] = useState('');
   const [newAccType, setNewAccType] = useState<'fiat' | 'savings' | 'cash' | 'other'>('fiat');
-  const [newAccCurrency, setNewAccCurrency] = useState('BGN');
+  const [newAccCurrency, setNewAccCurrency] = useState('EUR');
   const [newAccInitialBalance, setNewAccInitialBalance] = useState('0');
 
   // Feedback System
@@ -639,7 +639,7 @@ function App() {
     setEditingAccount(null);
     setNewAccName('');
     setNewAccType('fiat');
-    setNewAccCurrency('BGN');
+    setNewAccCurrency('EUR');
     setNewAccInitialBalance('0');
     setIsAccountModalOpen(true);
   };
@@ -1435,7 +1435,7 @@ function App() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className={entryType === 'transfer' ? 'col-span-2' : ''}>
-                  <label className={`block text-[9px] font-black uppercase tracking-[0.2em] mb-2 px-1 ${entryType === 'expense' ? 'text-red-500' : entryType === 'income' ? 'text-primary' : 'text-blue-500'}`}>Amount (BGN)</label>
+                  <label className={`block text-[9px] font-black uppercase tracking-[0.2em] mb-2 px-1 ${entryType === 'expense' ? 'text-red-500' : entryType === 'income' ? 'text-primary' : 'text-blue-500'}`}>Amount (EUR)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1712,7 +1712,7 @@ function App() {
                     </div>
                     <input
                       type="text"
-                      placeholder="BGN"
+                      placeholder="EUR"
                       value={newAccCurrency}
                       onChange={e => setNewAccCurrency(e.target.value)}
                       className="w-full h-12 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/5 rounded-xl pl-12 pr-4 text-xs font-bold uppercase text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-800"

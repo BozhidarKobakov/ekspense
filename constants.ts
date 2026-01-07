@@ -2,13 +2,13 @@
 import { Transaction, AccountSummary } from './types';
 
 export const INITIAL_ACCOUNTS: AccountSummary[] = [
-  { name: 'DSK', type: 'fiat', currency: 'BGN' },
-  { name: 'DSK Savings', type: 'savings', currency: 'BGN' },
-  { name: 'Revolut', type: 'fiat', currency: 'BGN' },
-  { name: 'Apartment', type: 'other', currency: 'BGN' },
-  { name: 'Cash', type: 'cash', currency: 'BGN' },
+  { name: 'DSK', type: 'fiat', currency: 'EUR' },
+  { name: 'DSK Savings', type: 'savings', currency: 'EUR' },
+  { name: 'Revolut', type: 'fiat', currency: 'EUR' },
+  { name: 'Apartment', type: 'other', currency: 'EUR' },
+  { name: 'Cash', type: 'cash', currency: 'EUR' },
   { name: 'DSK USD', type: 'fiat', currency: 'USD' },
-  { name: 'Nastya', type: 'other', currency: 'BGN' },
+  { name: 'Nastya', type: 'other', currency: 'EUR' },
 ];
 
 export const EXPENSE_CATEGORIES = [

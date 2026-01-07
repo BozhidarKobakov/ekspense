@@ -115,7 +115,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
   };
 
   // Helper for currency conversion
-  const getBGN = (amount: number, currency: string) => {
+  const getEUR = (amount: number, currency: string) => {
     return amount;
   };
 
@@ -126,7 +126,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
       const isToExternal = !isInternal(t.toAccount);
       return isOutboundFromActive && isToExternal;
     })
-    .reduce((sum, t) => sum + getBGN(t.amount, 'BGN'), 0);
+    .reduce((sum, t) => sum + getEUR(t.amount, 'EUR'), 0);
 
   const monthlyIncome = filteredTransactions
     .filter(t => {
@@ -134,7 +134,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
       const isFromExternal = !isInternal(t.fromAccount);
       return isInboundToActive && isFromExternal;
     })
-    .reduce((sum, t) => sum + getBGN(t.amount, 'BGN'), 0);
+    .reduce((sum, t) => sum + getEUR(t.amount, 'EUR'), 0);
 
   // --- Safe to Spend Calculation ---
   const autoLimit = monthlyIncome * 0.7; // 70% of income for spending
@@ -226,13 +226,13 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
                   className="bg-primary/10 dark:bg-[#0f2a15] px-3 py-1.5 rounded-full flex items-center shadow-sm dark:shadow-lg border border-primary/20 dark:border-primary/10 hover:border-primary/40 transition-all hover:scale-105 active:scale-95 group/limit mb-2"
                 >
                   <span className="text-[11px] font-bold text-primary-dark dark:text-primary tracking-tight group-hover/limit:text-primary dark:group-hover/limit:text-white transition-colors">
-                    Limit: <span className="opacity-80 text-[9px]">BGN</span> {spendingLimit.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    Limit: <span className="opacity-80 text-[9px]">EUR</span> {spendingLimit.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </span>
                 </button>
 
                 <div className="flex items-center text-[9px] font-black uppercase tracking-[0.2em]">
                   <span className="text-gray-400 dark:text-white/20">Spent:</span>
-                  <span className="text-gray-900 dark:text-white/60 ml-1.5">{monthlyExpenses.toLocaleString(undefined, { maximumFractionDigits: 0 })} <span className="text-[8px] opacity-30">Bgn</span></span>
+                  <span className="text-gray-900 dark:text-white/60 ml-1.5">{monthlyExpenses.toLocaleString(undefined, { maximumFractionDigits: 0 })} <span className="text-[8px] opacity-30">Eur</span></span>
                 </div>
               </div>
             </div>
@@ -281,11 +281,11 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
                   className="w-full bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/20 text-gray-900 dark:text-white text-center text-2xl font-black py-4 px-6 rounded-2xl focus:ring-2 focus:ring-primary outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
                   autoFocus
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 font-bold">BGN</span>
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 font-bold">EUR</span>
               </div>
 
               <p className="text-gray-500 text-xs mb-6">
-                Auto-calculated: <span className="text-primary font-bold">{autoLimit.toLocaleString(undefined, { maximumFractionDigits: 0 })} BGN</span> (70% of income)
+                Auto-calculated: <span className="text-primary font-bold">{autoLimit.toLocaleString(undefined, { maximumFractionDigits: 0 })} EUR</span> (70% of income)
               </p>
 
               <div className="flex space-x-3">
@@ -323,7 +323,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
               <span className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">
                 {monthlyIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
-              <span className="text-sm font-bold text-gray-400">BGN</span>
+              <span className="text-sm font-bold text-gray-400">EUR</span>
             </div>
           </div>
           <div className="flex items-center space-x-6">

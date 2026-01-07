@@ -6,7 +6,7 @@ create table accounts (
   user_id uuid references auth.users not null,
   name text not null,
   type text check (type in ('fiat', 'savings', 'cash', 'other')),
-  currency text default 'BGN',
+  currency text default 'EUR',
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
