@@ -11,40 +11,58 @@ interface DashboardProps {
   language: string;
 }
 
-// Circular Progress Ring Component
-const ProgressRing = ({ progress, size = 120, strokeWidth = 10, color = '#39fb48' }: { progress: number; size?: number; strokeWidth?: number; color?: string }) => {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const clampedProgress = Math.min(Math.max(progress, 0), 100);
-  const offset = circumference - (clampedProgress / 100) * circumference;
+// Tactical HUD-style Segmented Gauge
+const TacticalGauge = ({ progress, size = 180, color = '#39fb48' }: { progress: number; size?: number; color?: string }) => {
+  const segments = 28;
+  const radius = size / 2 - 15;
+  const startAngle = -220;
+  const endAngle = 40;
+  const range = endAngle - startAngle;
 
   return (
-    <svg width={size} height={size} className="transform -rotate-90">
-      {/* Background circle */}
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={strokeWidth}
-        className="text-gray-200 dark:text-gray-800"
-      />
-      {/* Progress circle */}
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        fill="none"
-        stroke={color}
-        strokeWidth={strokeWidth}
-        strokeLinecap="round"
-        strokeDasharray={circumference}
-        strokeDashoffset={offset}
-        className="transition-all duration-1000 ease-out"
-        style={{ filter: `drop-shadow(0 0 8px ${color}40)` }}
-      />
-    </svg>
+    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
+        <defs>
+          <filter id="neon-glow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {Array.from({ length: segments }).map((_, i) => {
+          const angle = startAngle + (range / (segments - 1)) * i;
+          const rad = (angle * Math.PI) / 180;
+
+          // Outer points
+          const x2 = size / 2 + radius * Math.cos(rad);
+          const y2 = size / 2 + radius * Math.sin(rad);
+
+          // Inner points
+          const x1 = size / 2 + (radius - 12) * Math.cos(rad);
+          const y1 = size / 2 + (radius - 12) * Math.sin(rad);
+
+          const isActive = (i / (segments - 1)) * 100 <= progress;
+
+          return (
+            <line
+              key={i}
+              x1={x1} y1={y1} x2={x2} y2={y2}
+              className={`transition-all duration-700 ease-out ${isActive ? '' : 'text-gray-200 dark:text-white/15'}`}
+              stroke={isActive ? color : 'currentColor'}
+              strokeWidth={isActive ? "4" : "2"} // Slightly thicker track
+              strokeLinecap="round"
+              style={{
+                filter: isActive ? 'url(#neon-glow)' : 'none',
+                opacity: 1 // Keep track fully opaque for better visibility
+              }}
+            />
+          );
+        })}
+      </svg>
+    </div>
   );
 };
 
@@ -182,102 +200,77 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
     <div className="space-y-8 animate-in fade-in duration-700">
 
       {/* SAFE TO SPEND - Hero Card (Mobile First) */}
-      <div className="relative group overflow-hidden bg-gray-950 rounded-[2.5rem] p-6 md:p-10 border border-white/10 shadow-2xl">
+      <div className="relative group overflow-hidden bg-white dark:bg-gray-950 rounded-[2.5rem] p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-2xl">
         {/* Decorative blurs */}
         <div className="absolute top-0 right-0 w-40 h-40 bg-primary/20 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-primary/30 transition-all duration-500"></div>
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -ml-16 -mb-16 group-hover:bg-secondary/20 transition-all duration-500"></div>
         {isOverspent && <div className="absolute inset-0 bg-red-500/5 pointer-events-none"></div>}
 
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-start gap-8 md:gap-12">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-start gap-8 md:gap-14">
           {/* Left: Progress Ring */}
-          <div className="relative flex-shrink-0">
-            <div className="relative">
-              <ProgressRing
+          <div className="relative flex-shrink-0 flex flex-col items-center">
+            <span className="text-[11px] font-black text-gray-400 dark:text-white/40 uppercase tracking-[0.3em] mb-4">{targetMonth}</span>
+            <div className="relative flex items-center justify-center">
+              <TacticalGauge
                 progress={spentPercentage}
-                size={160}
-                strokeWidth={14}
+                size={220}
                 color={getRingColor()}
               />
-              {/* Center content */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">Limit</span>
-                <span className="text-xl font-black text-white tracking-tight leading-none">
-                  {spendingLimit.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                </span>
-                <span className="text-[9px] font-bold text-gray-500 uppercase mt-1">BGN</span>
+              {/* Interactive Center Content */}
+              <div className="absolute flex flex-col items-center justify-center">
+                <button
+                  onClick={() => {
+                    setIsEditingLimit(true);
+                    setCustomLimitInput(spendingLimit.toString());
+                  }}
+                  className="bg-primary/10 dark:bg-[#0f2a15] px-3 py-1.5 rounded-full flex items-center shadow-sm dark:shadow-lg border border-primary/20 dark:border-primary/10 hover:border-primary/40 transition-all hover:scale-105 active:scale-95 group/limit mb-2"
+                >
+                  <span className="text-[11px] font-bold text-primary-dark dark:text-primary tracking-tight group-hover/limit:text-primary dark:group-hover/limit:text-white transition-colors">
+                    Limit: <span className="opacity-80 text-[9px]">BGN</span> {spendingLimit.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                  </span>
+                </button>
+
+                <div className="flex items-center text-[9px] font-black uppercase tracking-[0.2em]">
+                  <span className="text-gray-400 dark:text-white/20">Spent:</span>
+                  <span className="text-gray-900 dark:text-white/60 ml-1.5">{monthlyExpenses.toLocaleString(undefined, { maximumFractionDigits: 0 })} <span className="text-[8px] opacity-30">Bgn</span></span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Right: Text Content */}
-          <div className="flex-1 text-center md:text-left w-full">
-            {/* Status & Limit Edit Trigger */}
-            <div className="flex flex-col md:flex-row items-center md:items-start md:justify-between gap-4 mb-6">
-              <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.15em] ${isOverspent ? 'bg-red-500/20 text-red-400' : 'bg-primary/10 text-primary'}`}>
-                <div className={`w-2 h-2 rounded-full ${isOverspent ? 'bg-red-500 animate-pulse' : 'bg-primary animate-pulse'}`}></div>
-                <span>{isOverspent ? 'BUDGET EXCEEDED' : 'YOU ARE SAFE TO SPEND'}</span>
-              </div>
-
-              <button
-                onClick={() => {
-                  setIsEditingLimit(true);
-                  setCustomLimitInput(spendingLimit.toString());
-                }}
-                className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/5"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                <span>Adjust Limit</span>
-              </button>
+          <div className="flex-1 text-center md:text-left w-full -mt-6 md:-mt-8">
+            {/* Status Label (Right above the amount) */}
+            <div className={`inline-flex items-center px-0 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.25em] mb-1 text-gray-400 dark:text-white/40`}>
+              <span>{isOverspent ? 'BUDGET EXCEEDED' : 'YOU ARE SAFE TO SPEND'}</span>
             </div>
 
             {/* Main Amount */}
-            <div className="mb-6">
+            <div className="mb-0">
               {isOverspent ? (
-                <>
-                  <p className="text-red-400/60 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Overspent by</p>
-                  <div className="flex items-baseline justify-center md:justify-start space-x-2">
-                    <span className="text-5xl md:text-7xl font-black text-red-400 tracking-tighter">
-                      {Math.abs(safeToSpend).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </span>
-                    <span className="text-xl font-bold text-red-500/40">BGN</span>
-                  </div>
-                </>
+                <div className="flex items-baseline justify-center md:justify-start space-x-2">
+                  <span className="text-5xl md:text-[80px] font-black text-red-500 tracking-tighter leading-none">
+                    {Math.abs(safeToSpend).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                  <span className="text-xl font-black text-red-500/40 uppercase">Bgn</span>
+                </div>
               ) : (
                 <div className="flex items-baseline justify-center md:justify-start space-x-2">
-                  <span className="text-5xl md:text-7xl font-black text-white tracking-tighter shadow-sm">
+                  <span className="text-5xl md:text-[80px] font-black text-gray-900 dark:text-white tracking-tighter leading-none">
                     {safeToSpend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
-                  <span className="text-xl font-bold text-primary shadow-sm">BGN</span>
+                  <span className="text-xl font-black text-primary uppercase">Bgn</span>
                 </div>
               )}
-            </div>
-
-            {/* Spent Indicator */}
-            <div className="flex flex-col md:flex-row items-center md:justify-start gap-4">
-              <div className="flex items-center space-x-3 bg-white/5 rounded-2xl px-5 py-3 border border-white/5">
-                <div className="p-2 bg-white/5 rounded-lg">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest block leading-none mb-1">Spent Overall</span>
-                  <span className="text-lg font-black text-white leading-none">{monthlyExpenses.toLocaleString(undefined, { minimumFractionDigits: 2 })} <span className="text-xs font-bold text-gray-500">BGN</span></span>
-                </div>
-              </div>
-
-              <div className="hidden md:block h-10 w-px bg-white/5"></div>
-
-              <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em]">{targetMonth}</p>
             </div>
           </div>
         </div>
 
         {/* Edit Limit Modal */}
         {isEditingLimit && (
-          <div className="absolute inset-0 bg-gray-950/95 backdrop-blur-xl z-20 flex items-center justify-center rounded-[2.5rem] animate-in fade-in zoom-in-95 duration-200">
+          <div className="absolute inset-0 bg-white dark:bg-gray-950/95 backdrop-blur-xl z-20 flex items-center justify-center rounded-[2.5rem] animate-in fade-in zoom-in-95 duration-200">
             <div className="text-center p-6 max-w-xs w-full">
-              <h4 className="text-white font-black text-lg uppercase tracking-tight mb-6">Set Spending Limit</h4>
+              <h4 className="text-gray-900 dark:text-white font-black text-lg uppercase tracking-tight mb-6">Set Spending Limit</h4>
 
               <div className="relative mb-4">
                 <input
@@ -285,10 +278,10 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
                   value={customLimitInput}
                   onChange={(e) => setCustomLimitInput(e.target.value)}
                   placeholder={autoLimit.toFixed(0)}
-                  className="w-full bg-white/10 border border-white/20 text-white text-center text-2xl font-black py-4 px-6 rounded-2xl focus:ring-2 focus:ring-primary outline-none placeholder:text-gray-600"
+                  className="w-full bg-gray-100 dark:bg-white/10 border border-gray-200 dark:border-white/20 text-gray-900 dark:text-white text-center text-2xl font-black py-4 px-6 rounded-2xl focus:ring-2 focus:ring-primary outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
                   autoFocus
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">BGN</span>
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 font-bold">BGN</span>
               </div>
 
               <p className="text-gray-500 text-xs mb-6">
@@ -298,19 +291,19 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
               <div className="flex space-x-3">
                 <button
                   onClick={handleResetLimit}
-                  className="flex-1 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs font-black uppercase tracking-widest py-3 rounded-xl transition-all"
+                  className="flex-1 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs font-black uppercase tracking-widest py-3 rounded-xl transition-all"
                 >
                   Use Auto
                 </button>
                 <button
                   onClick={() => setIsEditingLimit(false)}
-                  className="flex-1 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs font-black uppercase tracking-widest py-3 rounded-xl transition-all"
+                  className="flex-1 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs font-black uppercase tracking-widest py-3 rounded-xl transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSaveLimit}
-                  className="flex-1 bg-primary hover:bg-primary-dark text-gray-950 text-xs font-black uppercase tracking-widest py-3 rounded-xl transition-all"
+                  className="flex-1 bg-primary hover:bg-primary-dark text-gray-950 text-xs font-black uppercase tracking-widest py-3 rounded-xl transition-all shadow-lg shadow-primary/20"
                 >
                   Save
                 </button>

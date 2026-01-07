@@ -22,12 +22,13 @@ const AccountsIcon = ({ className }: { className?: string }) => <svg className={
 const AnalyticsIcon = ({ className }: { className?: string }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>;
 const CategoriesIcon = ({ className }: { className?: string }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>;
 const SettingsIcon = ({ className }: { className?: string }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>;
+const GoalsIcon = ({ className }: { className?: string }) => <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>;
 
 function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [isInitializingAuth, setIsInitializingAuth] = useState(true);
   const [showInitializationError, setShowInitializationError] = useState(false);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'transactions' | 'accounts' | 'analytics' | 'categories' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'transactions' | 'accounts' | 'analytics' | 'categories' | 'settings' | 'goals'>('dashboard');
 
   useEffect(() => {
     console.log("Initializing Auth...");
@@ -741,15 +742,21 @@ function App() {
     );
   };
 
-  const MobileNavButton = ({ active, onClick, icon, label }: any) => (
+  const MobileNavButton = ({ active, onClick, icon, label, isCenter = false }: any) => (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center justify-center w-full py-1 transition-colors ${active ? 'text-primary' : 'text-gray-500'}`}
+      className={`flex items-center justify-center h-full w-full transition-all duration-300 ${active ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}
     >
-      <div className={`p-1.5 rounded-full transition-all ${active ? 'bg-primary/10' : ''}`}>
-        {React.cloneElement(icon, { className: 'w-6 h-6' })}
+      <div className={`flex flex-col items-center justify-center transition-all duration-300 rounded-full ${active && !isCenter ? 'bg-black/5 dark:bg-white/10 w-16 h-16' : 'w-16 h-16'} ${isCenter ? 'w-14 h-14' : ''}`}>
+        <div className={`transition-transform duration-300 ${active ? 'scale-110' : 'scale-100'}`}>
+          {React.cloneElement(icon, { className: isCenter ? 'w-8 h-8 text-gray-900 dark:text-white' : 'w-5 h-5' })}
+        </div>
+        {!isCenter && (
+          <span className={`text-[6px] font-medium uppercase tracking-[0.1em] text-center px-1 truncate w-full max-w-[56px] transition-all duration-300 ${active ? 'opacity-100' : 'opacity-60'}`}>
+            {label}
+          </span>
+        )}
       </div>
-      <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{label}</span>
     </button>
   );
 
@@ -828,12 +835,6 @@ function App() {
             )}
           </button>
 
-          <button
-            onClick={() => startNewEntry()}
-            className="bg-primary hover:bg-primary-dark active:scale-95 text-gray-950 p-2 rounded-lg shadow-lg shadow-primary/20 transition-all"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" /></svg>
-          </button>
 
           {activeTab === 'accounts' && (
             <button
@@ -864,6 +865,7 @@ function App() {
           <NavButton active={activeTab === 'accounts'} onClick={() => setActiveTab('accounts')} icon={<AccountsIcon className="w-6 h-6" />} label={getTranslation(language, 'accounts')} />
           <NavButton active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={<AnalyticsIcon className="w-6 h-6" />} label={getTranslation(language, 'analytics')} />
           <NavButton active={activeTab === 'categories'} onClick={() => setActiveTab('categories')} icon={<CategoriesIcon className="w-6 h-6" />} label={getTranslation(language, 'categories')} />
+          <NavButton active={activeTab === 'goals'} onClick={() => setActiveTab('goals')} icon={<GoalsIcon className="w-6 h-6" />} label={getTranslation(language, 'goals')} />
         </nav>
 
         {/* Bottom Utility Area */}
@@ -912,15 +914,22 @@ function App() {
         </div>
       </aside>
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-6 left-6 right-6 bg-gray-900/90 backdrop-blur-xl border border-white/10 rounded-3xl z-50 flex justify-around items-center h-20 px-2 shadow-2xl">
-        <MobileNavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon />} label={getTranslation(language, 'dashboard')} />
-        <MobileNavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<TransactionsIcon />} label="Transactions" />
-        <MobileNavButton active={activeTab === 'accounts'} onClick={() => setActiveTab('accounts')} icon={<AccountsIcon />} label="Accounts" />
-        <MobileNavButton active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} icon={<AnalyticsIcon />} label="Data" />
-        <MobileNavButton active={activeTab === 'categories'} onClick={() => setActiveTab('categories')} icon={<CategoriesIcon />} label="Config" />
-        <MobileNavButton active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} icon={<SettingsIcon />} label="More" />
-      </nav>
+      {/* Mobile Bottom Navigation (Crystal Glass) */}
+      <div className="md:hidden fixed bottom-8 left-6 right-6 z-50">
+        <nav className="bg-white/20 dark:bg-black/40 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-full h-20 shadow-[0_20px_50px_rgba(0,0,0,0.2)] grid grid-cols-5 items-center overflow-hidden px-2">
+          <MobileNavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon />} label={getTranslation(language, 'dashboard')} />
+          <MobileNavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<TransactionsIcon />} label={getTranslation(language, 'transactions')} />
+
+          <MobileNavButton
+            isCenter
+            onClick={() => startNewEntry()}
+            icon={<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>}
+          />
+
+          <MobileNavButton active={activeTab === 'accounts'} onClick={() => setActiveTab('accounts')} icon={<AccountsIcon />} label={getTranslation(language, 'accounts')} />
+          <MobileNavButton active={activeTab === 'goals'} onClick={() => setActiveTab('goals')} icon={<GoalsIcon />} label={getTranslation(language, 'goals')} />
+        </nav>
+      </div>
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto h-screen scroll-smooth">
@@ -1000,13 +1009,20 @@ function App() {
             <CategoriesView
               expenseCategories={expenseCategories}
               incomeCategories={incomeCategories}
-              onAddCategory={handleAddCategory}
-              onDeleteCategory={handleDeleteCategory}
-              onRenameCategory={handleRenameCategory}
+              onUpdateExpenseCategories={setExpenseCategories}
+              onUpdateIncomeCategories={setIncomeCategories}
               language={language}
             />
           )}
-
+          {activeTab === 'goals' && (
+            <div className="flex flex-col items-center justify-center h-[60vh] text-center">
+              <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center mb-6">
+                <GoalsIcon className="w-12 h-12 text-primary" />
+              </div>
+              <h3 className="text-3xl font-black text-white mb-2">Financial Goals</h3>
+              <p className="text-gray-500 max-w-sm">Plan your future and track your progress towards meaningful milestones. Coming soon.</p>
+            </div>
+          )}
           {activeTab === 'settings' && (
             <SettingsView
               darkMode={darkMode}
