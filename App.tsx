@@ -412,7 +412,12 @@ function App() {
           to_account: finalTo,
           amount: parseFloat(newAmount),
           category: newCategory
-        }).eq('id', editingTransaction.id).then();
+        }).eq('id', editingTransaction.id).then(({ error }) => {
+          if (error) {
+            console.error("Supabase Update Error:", error);
+            triggerFeedback('error', 'Update failed to sync');
+          }
+        });
       }
     } else {
       // CREATE new transaction
@@ -734,7 +739,12 @@ function App() {
     else setIncomeCategories(prev => prev.filter(c => c !== name));
 
     if (session) {
-      await supabase.from('categories').delete().eq('name', name).eq('type', type);
+      const { error } = await supabase.from('categories').delete().eq('name', name).eq('type', type);
+      if (error) {
+        console.error("Supabase Category Delete Error:", error);
+        triggerFeedback('error', 'Failed to remove category from cloud');
+        return;
+      }
     }
     triggerFeedback('success', 'Category removed');
   };
