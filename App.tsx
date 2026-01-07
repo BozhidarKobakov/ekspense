@@ -762,12 +762,12 @@ function App() {
       onClick={onClick}
       className={`flex items-center justify-center h-full w-full transition-all duration-300 ${active ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
     >
-      <div className={`flex flex-col items-center justify-center transition-all duration-300 rounded-full w-14 h-14 ${active && !isCenter ? 'bg-black/5 dark:bg-white/10' : ''}`}>
+      <div className={`flex flex-col items-center justify-center transition-all duration-300 rounded-full w-16 h-16 ${active && !isCenter ? 'bg-black/5 dark:bg-white/10' : ''}`}>
         <div className={`transition-transform duration-300 ${active ? 'scale-110' : 'scale-100'}`}>
-          {React.cloneElement(icon, { className: 'w-5 h-5' })}
+          {React.cloneElement(icon, { className: 'w-6 h-6' })}
         </div>
         {!isCenter && (
-          <span className={`text-[7px] font-black uppercase tracking-tighter text-center transition-all duration-300 px-1 ${active ? 'opacity-100 mt-0.5' : 'opacity-60 mt-0.5'}`}>
+          <span className={`text-[8px] font-black uppercase tracking-tighter text-center transition-all duration-300 px-1 ${active ? 'opacity-100 mt-0.5' : 'opacity-60 mt-0.5'}`}>
             {label}
           </span>
         )}
@@ -929,11 +929,11 @@ function App() {
         </div>
       </aside>
 
-      {/* Mobile Bottom Navigation (Crystal Glass - Absolute Symmetry) */}
+      {/* Mobile Bottom Navigation (Crystal Glass - Absolute Symmetry Upscaled) */}
       <div
         className={`md:hidden fixed bottom-8 left-0 right-0 px-4 z-50 transform-gpu transition-all duration-500 will-change-transform ${isNavVisible ? 'translate-y-0 opacity-100' : 'translate-y-24 opacity-0'}`}
       >
-        <nav className="mx-auto max-w-[360px] bg-white/20 dark:bg-black/40 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-full h-[72px] shadow-[0_20px_50px_rgba(0,0,0,0.2)] grid grid-cols-5 items-center overflow-hidden">
+        <nav className="mx-auto max-w-[400px] bg-white/20 dark:bg-black/40 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-full h-20 shadow-[0_20px_50px_rgba(0,0,0,0.2)] grid grid-cols-5 items-center overflow-hidden">
           <MobileNavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon />} label={getTranslation(language, 'dashboard')} />
           <MobileNavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<TransactionsIcon />} label={getTranslation(language, 'transactions')} />
 
