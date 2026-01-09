@@ -8,6 +8,7 @@ interface DashboardProps {
   availableMonths: string[];
   onMonthChange: (month: string) => void;
   accounts: AccountSummary[];
+  incomeCategories: string[];
   language: string;
 }
 
@@ -66,7 +67,7 @@ const TacticalGauge = ({ progress, size = 180, color = '#39fb48' }: { progress: 
   );
 };
 
-const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMonthChange, accounts, language }) => {
+const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMonthChange, accounts, incomeCategories, language }) => {
   const [excludedAccountNames, setExcludedAccountNames] = useState<string[]>([]);
   const [isEditingLimit, setIsEditingLimit] = useState(false);
   const [customLimitInput, setCustomLimitInput] = useState('');
@@ -130,9 +131,9 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
 
   const monthlyIncome = filteredTransactions
     .filter(t => {
-      const isInboundToActive = isInternal(t.toAccount) && !isExcluded(t.toAccount);
-      const isFromExternal = !isInternal(t.fromAccount);
-      return isInboundToActive && isFromExternal;
+      // Income = Anything where the category is known as an income category
+      // Often comes from 'External' to an internal account
+      return incomeCategories.includes(t.category);
     })
     .reduce((sum, t) => sum + getEUR(t.amount, 'EUR'), 0);
 
@@ -363,7 +364,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
               </div>
 
               <div className="flex flex-col items-center text-center w-fit scale-95 md:scale-100">
-                <h2 className="mr-[160px] text-gray-400 dark:text-gray-500 text-[10px] md:text-xs font-black uppercase tracking-widest leading-none mb-4 md:mb-[160px]">Inflow</h2>
+                <h2 className="mr-[160px] text-gray-400 dark:text-gray-500 text-[10px] md:text-xs font-black uppercase tracking-widest leading-none mb-4 md:mb-[160px]">{getTranslation(language, 'income')}</h2>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center space-y-2 md:space-y-4 pt-8">
                   <div className="flex items-baseline justify-center">
@@ -387,7 +388,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
               </div>
 
               <div className="flex flex-col items-center text-center w-fit scale-95 md:scale-100">
-                <h2 className="mr-[80px] text-gray-400 dark:text-gray-500 text-[10px] md:text-xs font-black uppercase tracking-widest leading-none mb-4 md:mb-[160px]">Outflow</h2>
+                <h2 className="mr-[80px] text-gray-400 dark:text-gray-500 text-[10px] md:text-xs font-black uppercase tracking-widest leading-none mb-4 md:mb-[160px]">{getTranslation(language, 'expense')}</h2>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center space-y-2 md:space-y-4 pt-8">
                   <div className="flex items-baseline justify-center">

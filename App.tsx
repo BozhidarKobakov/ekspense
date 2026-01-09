@@ -1091,6 +1091,7 @@ function App() {
               availableMonths={availableMonths}
               onMonthChange={setTargetMonth}
               accounts={accounts}
+              incomeCategories={incomeCategories}
               language={language}
             />
           )}
