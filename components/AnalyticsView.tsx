@@ -163,16 +163,23 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({
     const monthsMap = new Map<string, number>();
 
     transactions.forEach(t => {
-      // Exclude Income/Transfers from spending trend
-      if (['Transfer', 'Income', 'Salary'].includes(t.category)) return;
+      // 1. Exclude Income (based on dynamic incomeCategories list)
+      if (incomeCategories.includes(t.category)) return;
+
+      // 2. Exclude Internal Transfers (money moving between your accounts)
+      // If we have an account list, we can check if it's moving from internal to internal
+      const accountNames = accounts.map(a => a.name);
+      const isFromInternal = accountNames.includes(t.fromAccount);
+      const isToInternal = accountNames.includes(t.toAccount);
+
+      if (isFromInternal && isToInternal) return; // Skip transfers
+      if (!isFromInternal) return; // Skip income/external deposits if they weren't caught by category
 
       // Respect Account Filter
       if (selectedAccountNames.length > 0) {
         if (!selectedAccountNames.includes(t.fromAccount) && !selectedAccountNames.includes(t.toAccount)) return;
-      } else {
-        // Default exclusion if no filter (historical logic)
-        if (t.fromAccount === 'Nastya') return;
       }
+
 
       const m = MONTH_NAMES[t.date.getMonth()];
       const y = t.date.getFullYear();
