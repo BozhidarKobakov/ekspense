@@ -12,20 +12,23 @@ interface DashboardProps {
   language: string;
 }
 
-// Tactical HUD-style Segmented Gauge
 const TacticalGauge = ({ progress, size = 180, color = '#39fb48' }: { progress: number; size?: number; color?: string }) => {
-  const segments = 28;
   const radius = size / 2 - 15;
-  const startAngle = -220;
-  const endAngle = 40;
-  const range = endAngle - startAngle;
+  const centerX = size / 2;
+  const centerY = size / 2;
+
+  // Configuration for a 260-degree arc
+  const circumference = 2 * Math.PI * radius;
+  const arcLength = (260 / 360) * circumference;
+  const gapLength = circumference - arcLength;
+  const progressLength = (progress / 100) * arcLength;
 
   return (
     <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible transform -rotate-[220deg]">
         <defs>
-          <filter id="neon-glow" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+          <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -33,35 +36,34 @@ const TacticalGauge = ({ progress, size = 180, color = '#39fb48' }: { progress: 
           </filter>
         </defs>
 
-        {Array.from({ length: segments }).map((_, i) => {
-          const angle = startAngle + (range / (segments - 1)) * i;
-          const rad = (angle * Math.PI) / 180;
+        {/* Progress Track (Background) */}
+        <circle
+          cx={centerX}
+          cy={centerY}
+          r={radius}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="10"
+          strokeDasharray={`${arcLength} ${gapLength}`}
+          strokeLinecap="round"
+          className="text-gray-100 dark:text-white/10 transition-colors duration-500"
+        />
 
-          // Outer points
-          const x2 = size / 2 + radius * Math.cos(rad);
-          const y2 = size / 2 + radius * Math.sin(rad);
-
-          // Inner points
-          const x1 = size / 2 + (radius - 12) * Math.cos(rad);
-          const y1 = size / 2 + (radius - 12) * Math.sin(rad);
-
-          const isActive = (i / (segments - 1)) * 100 <= progress;
-
-          return (
-            <line
-              key={i}
-              x1={x1} y1={y1} x2={x2} y2={y2}
-              className={`transition-all duration-700 ease-out ${isActive ? '' : 'text-gray-200 dark:text-white/15'}`}
-              stroke={isActive ? color : 'currentColor'}
-              strokeWidth={isActive ? "4" : "2"} // Slightly thicker track
-              strokeLinecap="round"
-              style={{
-                filter: isActive ? 'url(#neon-glow)' : 'none',
-                opacity: 1 // Keep track fully opaque for better visibility
-              }}
-            />
-          );
-        })}
+        {/* Progress Fill (Foreground) */}
+        <circle
+          cx={centerX}
+          cy={centerY}
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth="12"
+          strokeDasharray={`${progressLength} ${circumference}`}
+          strokeLinecap="round"
+          style={{
+            filter: 'url(#neon-glow)',
+            transition: 'stroke-dasharray 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.5s ease'
+          }}
+        />
       </svg>
     </div>
   );
@@ -239,7 +241,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
         {/* SAFE TO SPEND - Compact Hero Card */}
-        <div className="lg:col-span-2 relative group overflow-visible bg-white dark:bg-gray-950 rounded-[2.5rem] p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-2xl">
+        <div className="lg:col-span-2 relative group overflow-hidden bg-white dark:bg-gray-950 rounded-[2.5rem] p-6 md:p-8 border border-gray-200 dark:border-white/10 shadow-2xl">
           {/* Decorative blurs */}
           <div className="absolute top-0 right-0 w-40 h-40 bg-primary/20 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-primary/30 transition-all duration-500"></div>
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -ml-16 -mb-16 group-hover:bg-secondary/20 transition-all duration-500"></div>
@@ -364,7 +366,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
               </div>
 
               <div className="flex flex-col items-center text-center w-fit scale-95 md:scale-100">
-                <h2 className="mr-[160px] text-gray-400 dark:text-gray-500 text-[10px] md:text-xs font-black uppercase tracking-widest leading-none mb-4 md:mb-[160px]">{getTranslation(language, 'income')}</h2>
+                <h2 className="mr-[160px] text-gray-400 dark:text-gray-500 text-[10px] md:text-xs font-black uppercase tracking-widest leading-none mb-4 md:mb-[250px]">{getTranslation(language, 'income')}</h2>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center space-y-2 md:space-y-4 pt-8">
                   <div className="flex items-baseline justify-center">
@@ -388,7 +390,7 @@ const Dashboard: React.FC<DashboardProps> = ({ transactions, targetMonth, onMont
               </div>
 
               <div className="flex flex-col items-center text-center w-fit scale-95 md:scale-100">
-                <h2 className="mr-[80px] text-gray-400 dark:text-gray-500 text-[10px] md:text-xs font-black uppercase tracking-widest leading-none mb-4 md:mb-[160px]">{getTranslation(language, 'expense')}</h2>
+                <h2 className="mr-[80px] text-gray-400 dark:text-gray-500 text-[10px] md:text-xs font-black uppercase tracking-widest leading-none mb-4 md:mb-[250px]">{getTranslation(language, 'expense')}</h2>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center space-y-2 md:space-y-4 pt-8">
                   <div className="flex items-baseline justify-center">

@@ -831,7 +831,7 @@ function App() {
     return (
       <button
         onClick={onClick}
-        className={`w-full flex items-center h-16 transition-all duration-300 font-black overflow-hidden group/btn relative
+        className={`w-full flex items-center h-11 transition-all duration-300 font-black overflow-hidden group/btn relative
         ${active
             ? 'text-primary'
             : 'text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
@@ -842,14 +842,14 @@ function App() {
         )}
 
         {/* Fixed Width Icon Slot - No Background Square */}
-        <div className="w-[85px] flex-shrink-0 flex items-center justify-center relative">
-          <div className={`transition-all duration-300 ${active ? 'scale-110 drop-shadow-[0_0_8px_rgba(163,230,53,0.3)]' : 'group-hover/btn:scale-110'}`}>
-            {icon}
+        <div className="w-[64px] flex-shrink-0 flex items-center justify-center relative">
+          <div className={`transition-all duration-300 ${active ? 'scale-105 drop-shadow-[0_0_8px_rgba(163,230,53,0.3)]' : 'group-hover/btn:scale-105'}`}>
+            {React.cloneElement(icon as React.ReactElement, { className: 'w-5 h-5' })}
           </div>
         </div>
 
         {/* Label Slot */}
-        <span className="ml-0 opacity-100 transition-all duration-500 uppercase text-[11px] tracking-[0.2em] whitespace-nowrap">
+        <span className="ml-0 opacity-100 transition-all duration-500 uppercase text-[10px] font-bold tracking-[0.1em] whitespace-nowrap">
           {label}
         </span>
       </button>
@@ -962,18 +962,18 @@ function App() {
       </header>
 
       {/* Desktop Sidebar (Fixed Width) */}
-      <aside className="hidden md:flex w-72 bg-white dark:bg-gray-950 text-gray-900 dark:text-white flex-shrink-0 h-screen sticky top-0 flex-col border-r border-gray-200 dark:border-white/5 shadow-2xl z-40 transition-all duration-500 overflow-hidden">
-        <div className="py-10 flex items-center">
-          <div className="w-[85px] flex-shrink-0 flex items-center justify-center">
-            <div className="text-3xl font-black text-primary tracking-tighter transform lg:group-hover:scale-110 transition-transform duration-500 select-none">E</div>
+      <aside className="hidden md:flex w-60 bg-white dark:bg-gray-950 text-gray-900 dark:text-white flex-shrink-0 h-screen sticky top-0 flex-col border-r border-gray-200 dark:border-white/5 shadow-2xl z-40 transition-all duration-500 overflow-hidden">
+        <div className="py-6 flex items-center">
+          <div className="w-[64px] flex-shrink-0 flex items-center justify-center">
+            <div className="text-2xl font-black text-primary tracking-tighter transform lg:group-hover:scale-110 transition-transform duration-500 select-none">E</div>
           </div>
           <div className="opacity-100 transition-all duration-500 whitespace-nowrap block">
-            <h1 className="text-2xl font-black tracking-tighter text-primary" style={{ fontFamily: "'Outfit', sans-serif" }}>EKSPENSE</h1>
-            <p className="text-gray-500 text-[8px] font-bold uppercase tracking-[0.2em] px-1">Modern Finance</p>
+            <h1 className="text-xl font-black tracking-tighter text-primary" style={{ fontFamily: "'Outfit', sans-serif" }}>EKSPENSE</h1>
+            <p className="text-gray-500 text-[7px] font-bold uppercase tracking-[0.15em] px-0.5">Modern Finance</p>
           </div>
         </div>
 
-        <nav className="py-6 space-y-4 flex-1 overflow-x-hidden">
+        <nav className="py-2 space-y-1 flex-1 overflow-x-hidden">
           <NavButton active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={<DashboardIcon className="w-6 h-6" />} label={getTranslation(language, 'dashboard')} />
           <NavButton active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} icon={<TransactionsIcon className="w-6 h-6" />} label={getTranslation(language, 'transactions')} />
           <NavButton active={activeTab === 'accounts'} onClick={() => setActiveTab('accounts')} icon={<AccountsIcon className="w-6 h-6" />} label={getTranslation(language, 'accounts')} />
@@ -983,44 +983,44 @@ function App() {
         </nav>
 
         {/* Bottom Utility Area */}
-        <div className="pb-4 space-y-2">
-          <NavButton active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} icon={<SettingsIcon className="w-6 h-6" />} label={getTranslation(language, 'settings')} />
+        <div className="pb-2 space-y-0.5">
+          <NavButton active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} icon={<SettingsIcon className="w-5 h-5" />} label={getTranslation(language, 'settings')} />
           <button
             onClick={handleLogout}
-            className="w-full flex items-center h-16 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-all duration-300 font-black overflow-hidden group/logout"
+            className="w-full flex items-center h-11 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-all duration-300 font-black overflow-hidden group/logout"
           >
-            <div className="w-[85px] flex-shrink-0 flex items-center justify-center">
-              <svg className="w-6 h-6 group-hover/logout:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-[64px] flex-shrink-0 flex items-center justify-center">
+              <svg className="w-5 h-5 group-hover/logout:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
             </div>
-            <span className="opacity-100 transition-all duration-500 uppercase text-[11px] tracking-[0.2em] whitespace-nowrap">
+            <span className="opacity-100 transition-all duration-500 uppercase text-[10px] font-bold tracking-[0.1em] whitespace-nowrap">
               Log Out
             </span>
           </button>
         </div>
 
         {/* Footer Controls: Period Only */}
-        <div className="border-t border-gray-100 dark:border-white/5 py-6">
-          <div className="flex flex-col space-y-1">
+        <div className="border-t border-gray-100 dark:border-white/5 py-4">
+          <div className="flex flex-col space-y-0.5">
             {/* Period Selector */}
-            <div className="flex items-center h-14 group/period cursor-pointer">
-              <div className="w-[85px] flex-shrink-0 flex items-center justify-center text-gray-400 group-hover/period:text-primary transition-colors">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            <div className="flex items-center h-11 group/period cursor-pointer">
+              <div className="w-[64px] flex-shrink-0 flex items-center justify-center text-gray-400 group-hover/period:text-primary transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
               </div>
-              <div className="opacity-100 transition-all duration-500 flex-1 pr-6 pointer-events-auto">
-                <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-0.5">Period</label>
+              <div className="opacity-100 transition-all duration-500 flex-1 pr-4 pointer-events-auto">
+                <label className="text-[8px] font-black text-gray-400 uppercase tracking-[0.15em] block mb-0">Period</label>
                 <div className="relative flex items-center">
                   <select
                     value={targetMonth}
                     onChange={(e) => setTargetMonth(e.target.value)}
-                    className="w-full bg-transparent border-none text-gray-900 dark:text-white text-xs font-black focus:ring-0 outline-none uppercase p-0 appearance-none cursor-pointer"
+                    className="w-full bg-transparent border-none text-gray-900 dark:text-white text-[11px] font-black focus:ring-0 outline-none uppercase p-0 appearance-none cursor-pointer"
                   >
                     {availableMonths.map(m => (
                       <option key={m} value={m} className="bg-white dark:bg-gray-900">{m}</option>
                     ))}
                   </select>
-                  <svg className="w-3 h-3 text-gray-400 absolute right-0 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg>
+                  <svg className="w-2.5 h-2.5 text-gray-400 absolute right-0 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg>
                 </div>
               </div>
             </div>
@@ -1158,7 +1158,7 @@ function App() {
 
       {/* Add/Edit Transaction Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-950/80 flex items-end sm:items-center justify-center z-[60] backdrop-blur-md p-0 sm:p-4">
+        <div className="fixed inset-0 bg-gray-950/20 dark:bg-gray-950/80 flex items-end sm:items-center justify-center z-[60] backdrop-blur-md p-0 sm:p-4">
           <div className="bg-slate-50 dark:bg-gray-900 rounded-[2rem] shadow-[0_30px_100px_rgba(0,0,0,0.3)] w-full max-w-md p-6 max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-white/5 animate-in fade-in zoom-in-95 duration-400 relative">
             <div className="flex justify-between items-center mb-5 relative z-10">
               <div className="flex items-center space-x-3">
@@ -1584,14 +1584,14 @@ function App() {
 
       {/* Account Deletion Confirmation Modal */}
       {accountToDelete && (
-        <div className="fixed inset-0 bg-gray-950/80 flex items-center justify-center z-[160] backdrop-blur-md p-4 animate-in fade-in duration-300">
-          <div className="bg-gray-900 border border-white/10 rounded-[2rem] p-6 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 bg-gray-950/40 dark:bg-gray-950/80 flex items-center justify-center z-[160] backdrop-blur-md p-4 animate-in fade-in duration-300">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-white/10 rounded-[2rem] p-6 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-300">
             <div className="w-14 h-14 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-red-500/20">
               <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
             </div>
-            <h3 className="text-lg font-black text-white text-center mb-1 uppercase tracking-tighter">Liquidate Account?</h3>
+            <h3 className="text-lg font-black text-gray-900 dark:text-white text-center mb-1 uppercase tracking-tighter">Liquidate Account?</h3>
             <p className="text-[11px] text-gray-500 text-center mb-6 font-medium leading-relaxed px-4">
-              Permanent removal of <span className="text-white font-black">"{accountToDelete}"</span>. History will be erased.
+              Permanent removal of <span className="text-gray-900 dark:text-white font-black">"{accountToDelete}"</span>. History will be erased.
             </p>
             <div className="flex flex-col space-y-2">
               <button
@@ -1602,7 +1602,7 @@ function App() {
               </button>
               <button
                 onClick={() => setAccountToDelete(null)}
-                className="w-full bg-white/5 text-gray-500 hover:text-white text-[10px] font-black py-3.5 rounded-xl transition-all uppercase tracking-widest"
+                className="w-full bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-gray-900 dark:hover:text-white text-[10px] font-black py-3.5 rounded-xl transition-all uppercase tracking-widest"
               >
                 Retain
               </button>
@@ -1689,7 +1689,7 @@ function App() {
       `}</style>
       {/* Add/Edit Account Modal Overlay */}
       {isAccountModalOpen && (
-        <div className="fixed inset-0 bg-gray-950/60 backdrop-blur-xl z-[150] flex items-center justify-center p-4 animate-in fade-in duration-300">
+        <div className="fixed inset-0 bg-gray-950/20 dark:bg-gray-950/60 backdrop-blur-xl z-[150] flex items-center justify-center p-4 animate-in fade-in duration-300">
           <div className="bg-white dark:bg-gray-900 w-full max-w-md rounded-[2rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-white/5 overflow-hidden animate-in zoom-in-95 duration-300">
             {/* Modal Header */}
             <div className="bg-gray-50/50 dark:bg-gray-950/30 p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
