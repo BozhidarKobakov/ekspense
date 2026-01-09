@@ -622,13 +622,45 @@ function App() {
     setAccountToDelete(name);
   };
 
-  const confirmDeleteAccount = () => {
+  const confirmDeleteAccount = async () => {
     if (!accountToDelete) return;
     const name = accountToDelete;
-    // Also delete all associated transactions
+
+    // 1. Optimistic Local Update
     setAccounts(prev => prev.filter(a => a.name !== name));
     setTransactions(prev => prev.filter(t => t.fromAccount !== name && t.toAccount !== name));
-    triggerFeedback('success', 'Account removed');
+
+    if (session) {
+      // 2. Delete the account from Supabase
+      const accountDelete = supabase
+        .from('accounts')
+        .delete()
+        .eq('name', name)
+        .eq('user_id', session.user.id);
+
+      // 3. Delete all transactions specifically tied to this account name
+      const transactionsDelete = supabase
+        .from('transactions')
+        .delete()
+        .or(`from_account.eq."${name}",to_account.eq."${name}"`)
+        .eq('user_id', session.user.id);
+
+      try {
+        const [accRes, transRes] = await Promise.all([accountDelete, transactionsDelete]);
+
+        if (accRes.error) throw accRes.error;
+        if (transRes.error) throw transRes.error;
+
+        triggerFeedback('success', 'Account & data removed');
+      } catch (err) {
+        console.error("Supabase Delete Error:", err);
+        triggerFeedback('error', 'Failed to fully sync deletion');
+        // Note: In a production app, we would ideally revert the local state here
+      }
+    } else {
+      triggerFeedback('success', 'Account removed');
+    }
+
     setAccountToDelete(null);
   };
 
@@ -733,15 +765,34 @@ function App() {
   };
 
   const handleAddCategory = async (type: 'expense' | 'income', name: string) => {
+    // Prevent duplicates
+    const currentList = type === 'expense' ? expenseCategories : incomeCategories;
+    if (currentList.some(c => c.toLowerCase() === name.toLowerCase())) {
+      triggerFeedback('error', 'Category already exists');
+      return;
+    }
+
+    // Optimistic Update
     if (type === 'expense') setExpenseCategories(prev => [...prev, name]);
     else setIncomeCategories(prev => [...prev, name]);
 
     if (session) {
-      await supabase.from('categories').insert({
+      const { error } = await supabase.from('categories').insert({
         user_id: session.user.id,
         name: name,
         type: type
       });
+
+      if (error) {
+        console.error("Supabase Category Insert Error:", error);
+        // Show the REAL error message so we can fix it!
+        triggerFeedback('error', `Cloud Error: ${error.message}`);
+
+        // Revert local state
+        if (type === 'expense') setExpenseCategories(prev => prev.filter(c => c !== name));
+        else setIncomeCategories(prev => prev.filter(c => c !== name));
+        return;
+      }
     }
     triggerFeedback('success', 'Category added');
   };
@@ -798,7 +849,7 @@ function App() {
         </div>
 
         {/* Label Slot */}
-        <span className="ml-0 opacity-0 lg:group-hover:opacity-100 transition-all duration-500 uppercase text-[11px] tracking-[0.2em] whitespace-nowrap">
+        <span className="ml-0 opacity-100 transition-all duration-500 uppercase text-[11px] tracking-[0.2em] whitespace-nowrap">
           {label}
         </span>
       </button>
@@ -910,13 +961,13 @@ function App() {
         </div>
       </header>
 
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex group w-[85px] hover:w-72 bg-white dark:bg-gray-950 text-gray-900 dark:text-white flex-shrink-0 h-screen sticky top-0 flex-col border-r border-gray-200 dark:border-white/5 shadow-2xl z-40 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden">
+      {/* Desktop Sidebar (Fixed Width) */}
+      <aside className="hidden md:flex w-72 bg-white dark:bg-gray-950 text-gray-900 dark:text-white flex-shrink-0 h-screen sticky top-0 flex-col border-r border-gray-200 dark:border-white/5 shadow-2xl z-40 transition-all duration-500 overflow-hidden">
         <div className="py-10 flex items-center">
           <div className="w-[85px] flex-shrink-0 flex items-center justify-center">
             <div className="text-3xl font-black text-primary tracking-tighter transform lg:group-hover:scale-110 transition-transform duration-500 select-none">E</div>
           </div>
-          <div className="opacity-0 lg:group-hover:opacity-100 transition-all duration-500 whitespace-nowrap hidden lg:group-hover:block">
+          <div className="opacity-100 transition-all duration-500 whitespace-nowrap block">
             <h1 className="text-2xl font-black tracking-tighter text-primary" style={{ fontFamily: "'Outfit', sans-serif" }}>EKSPENSE</h1>
             <p className="text-gray-500 text-[8px] font-bold uppercase tracking-[0.2em] px-1">Modern Finance</p>
           </div>
@@ -943,7 +994,7 @@ function App() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
             </div>
-            <span className="opacity-0 lg:group-hover:opacity-100 transition-all duration-500 uppercase text-[11px] tracking-[0.2em] whitespace-nowrap">
+            <span className="opacity-100 transition-all duration-500 uppercase text-[11px] tracking-[0.2em] whitespace-nowrap">
               Log Out
             </span>
           </button>
@@ -957,7 +1008,7 @@ function App() {
               <div className="w-[85px] flex-shrink-0 flex items-center justify-center text-gray-400 group-hover/period:text-primary transition-colors">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
               </div>
-              <div className="opacity-0 lg:group-hover:opacity-100 transition-all duration-500 flex-1 pr-6 pointer-events-none lg:group-hover:pointer-events-auto">
+              <div className="opacity-100 transition-all duration-500 flex-1 pr-6 pointer-events-auto">
                 <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-0.5">Period</label>
                 <div className="relative flex items-center">
                   <select
@@ -1002,7 +1053,7 @@ function App() {
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto h-screen scroll-smooth"
       >
-        <div className="max-w-7xl mx-auto p-6 pt-24 pb-32 md:p-12 md:pt-12 md:pb-12">
+        <div className="max-w-[1440px] mx-auto p-6 pt-24 pb-32 md:p-12 md:pt-12 md:pb-12">
           <header className="hidden md:flex justify-between items-center mb-12">
             <div>
               <h2 className="text-4xl font-black text-gray-900 dark:text-white capitalize tracking-tighter" style={{ fontFamily: "'Outfit', sans-serif" }}>
@@ -1078,9 +1129,9 @@ function App() {
             <CategoriesView
               expenseCategories={expenseCategories}
               incomeCategories={incomeCategories}
-              onUpdateExpenseCategories={setExpenseCategories}
-              onUpdateIncomeCategories={setIncomeCategories}
-              language={language}
+              onAddCategory={handleAddCategory}
+              onDeleteCategory={handleDeleteCategory}
+              onRenameCategory={handleRenameCategory}
             />
           )}
           {activeTab === 'goals' && (
